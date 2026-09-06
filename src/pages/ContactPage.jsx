@@ -7,6 +7,7 @@ import {
   MapPin,
   Clock,
   MessageCircle,
+  Instagram,
   Calendar,
   Users,
   CheckCircle2,
@@ -34,17 +35,29 @@ export default function ContactPage({ onOpenEnquiry }) {
     e.preventDefault();
     if (!formData.name || !formData.phone) return;
 
-    // Compose formatted WhatsApp enquiry message
-    const msg = `*New Banquet Consultation Request - KateringKing*%0A%0A` +
-      `*Host Name:* ${formData.name}%0A` +
-      `*Phone:* ${formData.phone}%0A` +
-      `*Email:* ${formData.email || 'Not provided'}%0A` +
-      `*Event Type:* ${formData.eventType}%0A` +
-      `*Guest Count:* ${formData.guestCount}%0A` +
-      `*Event Date:* ${formData.eventDate || 'TBD'}%0A` +
-      `*Culinary Vision:* ${formData.message || 'Standard Consultation'}`;
+    // Compose formatted WhatsApp consultation request message
+    const message = [
+      `👑 *NEW BANQUET CONSULTATION REQUEST — KateringKing* 👑`,
+      ``,
+      `Hello Team KateringKing, I would like to request a bespoke catering quote for my upcoming celebration.`,
+      ``,
+      `📋 *EVENT DETAILS*`,
+      `• *Host Name:* ${formData.name.trim()}`,
+      `• *Client Phone / WhatsApp:* ${formData.phone.trim()}`,
+      formData.email && formData.email.trim() ? `• *Email:* ${formData.email.trim()}` : null,
+      `• *Event Type:* ${formData.eventType || 'Royal Wedding & Reception'}`,
+      `• *Guest Count:* ${formData.guestCount || '300 - 600 guests'}`,
+      `• *Event Date:* ${formData.eventDate || 'To be decided'}`,
+      formData.message && formData.message.trim() ? `• *Culinary Vision / Notes:* ${formData.message.trim()}` : null,
+      ``,
+      `Kindly share your package menu proposal and availability. Thank you!`
+    ]
+      .filter(Boolean)
+      .join('\n');
 
-    window.open(`https://wa.me/${siteSettings.whatsappNumber}?text=${msg}`, '_blank');
+    const recipient = (siteSettings.whatsappNumber || '917777998789').replace(/[^0-9]/g, '');
+    const whatsappUrl = `https://wa.me/${recipient}?text=${encodeURIComponent(message)}`;
+    window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
     setSubmitted(true);
   };
 
@@ -68,85 +81,21 @@ export default function ContactPage({ onOpenEnquiry }) {
   ];
 
   return (
-    <div className="page-contact" style={{ paddingTop: 'calc(var(--navbar-height) + 32px)' }}>
-      {/* Page Hero Header */}
-      <section
-        style={{
-          padding: '60px 0 40px',
-          background: 'radial-gradient(ellipse at 50% 0%, rgba(200, 138, 46, 0.12) 0%, transparent 70%), var(--color-neutral-canvas)',
-          textAlign: 'center',
-          position: 'relative'
-        }}
-      >
-        <div className="container">
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
-            <span
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '6px',
-                padding: '6px 18px',
-                borderRadius: 'var(--radius-full)',
-                backgroundColor: 'rgba(200, 138, 46, 0.14)',
-                color: 'var(--color-primary)',
-                fontSize: '12px',
-                fontWeight: 800,
-                letterSpacing: '0.08em',
-                textTransform: 'uppercase'
-              }}
-            >
-              <Crown size={14} />
-              <span>Banqueting Concierge & Tasting Studio</span>
-            </span>
-          </div>
-
-          <h1
-            style={{
-              fontFamily: 'var(--font-serif)',
-              fontSize: 'clamp(36px, 4.5vw, 58px)',
-              fontWeight: 900,
-              color: 'var(--color-text-primary)',
-              letterSpacing: '-0.025em',
-              lineHeight: 1.1,
-              maxWidth: '880px',
-              margin: '0 auto 20px'
-            }}
-          >
-            Connect With Our Executive Banqueting Directors
-          </h1>
-
-          <p
-            style={{
-              fontSize: 'clamp(16px, 1.8vw, 19px)',
-              color: 'var(--color-text-secondary)',
-              maxWidth: '740px',
-              margin: '0 auto',
-              lineHeight: 1.65
-            }}
-          >
-            Reserve your banquet date, request a bespoke multi-course proposal, or schedule an executive tasting session at our Jubilee Hills studio.
-          </p>
-        </div>
-      </section>
-
+    <div className="page-contact" style={{ paddingTop: 'var(--navbar-height)' }}>
       {/* Main Grid: Contact Form & Studio Details */}
       <section className="section-padding" style={{ backgroundColor: 'var(--color-neutral-canvas)' }}>
         <div className="container">
           <div
             style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-              gap: '48px',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 300px), 1fr))',
+              gap: 'clamp(32px, 5vw, 48px)',
               alignItems: 'flex-start'
             }}
           >
             {/* Left Column: Direct Contact Info & Hours */}
             <div>
               <div style={{ marginBottom: '32px' }}>
-                <span className="badge-kicker" style={{ display: 'inline-flex', marginBottom: '12px' }}>
-                  <Sparkles size={14} />
-                  <span>Jubilee Hills Tasting Studio</span>
-                </span>
                 <h2
                   style={{
                     fontFamily: 'var(--font-serif)',
@@ -236,12 +185,18 @@ export default function ContactPage({ onOpenEnquiry }) {
                       VIP Banquet Hotline
                     </h4>
                     <p style={{ fontSize: '14px', color: 'var(--color-text-secondary)', lineHeight: 1.5, margin: 0 }}>
-                      {siteSettings.phone} (Direct to Senior Director)
+                      <a
+                        href={`tel:${siteSettings.phone.replace(/\s+/g, '')}`}
+                        style={{ color: 'var(--color-primary)', fontWeight: 700, textDecoration: 'none' }}
+                      >
+                        {siteSettings.phoneDisplay || siteSettings.phone}
+                      </a>{' '}
+                      (Direct to Senior Director)
                     </p>
                   </div>
                 </div>
 
-                {/* WhatsApp & Email */}
+                {/* Studio Hours */}
                 <div
                   style={{
                     padding: '24px',
@@ -278,31 +233,102 @@ export default function ContactPage({ onOpenEnquiry }) {
                     </p>
                   </div>
                 </div>
-              </div>
 
-              {/* Instant WhatsApp Quick Button */}
-              <a
-                href={`https://wa.me/${siteSettings.whatsappNumber}?text=Hi%20KateringKing%20Team%2C%20I%20would%20like%20to%20inquire%20about%20banquet%20catering%20services.`}
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '10px',
-                  backgroundColor: '#25D366',
-                  color: '#FFFFFF',
-                  padding: '16px 28px',
-                  borderRadius: 'var(--radius-full)',
-                  fontWeight: 800,
-                  fontSize: '15px',
-                  textDecoration: 'none',
-                  boxShadow: '0 8px 24px rgba(37, 211, 102, 0.35)',
-                  transition: 'transform var(--transition-fast)'
-                }}
-              >
-                <MessageCircle size={20} strokeWidth={2.4} />
-                <span>Chat Instantly on WhatsApp</span>
-              </a>
+                {/* Official Social & Contact Channels Card */}
+                <div
+                  style={{
+                    padding: '24px',
+                    borderRadius: 'var(--radius-md)',
+                    backgroundColor: '#FFFFFF',
+                    border: '1px solid var(--color-border-subtle)',
+                    boxShadow: '0 4px 14px rgba(10, 13, 18, 0.04)'
+                  }}
+                >
+                  <h4 style={{ fontSize: '16px', fontWeight: 800, color: 'var(--color-text-primary)', marginBottom: '14px' }}>
+                    Official Social Channels
+                  </h4>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                    <a
+                      href={siteSettings.social.instagram}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label="Visit KateringKing on Instagram"
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        padding: '10px 14px',
+                        borderRadius: 'var(--radius-sm)',
+                        backgroundColor: 'var(--color-surface-elevated)',
+                        color: 'var(--color-text-primary)',
+                        textDecoration: 'none',
+                        fontSize: '13.5px',
+                        fontWeight: 600,
+                        transition: 'all var(--transition-fast)'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = '#E1306C';
+                        e.currentTarget.style.color = '#FFFFFF';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = 'var(--color-surface-elevated)';
+                        e.currentTarget.style.color = 'var(--color-text-primary)';
+                      }}
+                    >
+                      <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <Instagram size={17} />
+                        <span>Instagram</span>
+                      </span>
+                      <span style={{ fontSize: '12.5px', opacity: 0.85 }}>{siteSettings.social.instagramHandle}</span>
+                    </a>
+
+                    <a
+                      href={siteSettings.social.facebook}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label="Visit KateringKing on Facebook"
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        padding: '10px 14px',
+                        borderRadius: 'var(--radius-sm)',
+                        backgroundColor: 'var(--color-surface-elevated)',
+                        color: 'var(--color-text-primary)',
+                        textDecoration: 'none',
+                        fontSize: '13.5px',
+                        fontWeight: 600,
+                        transition: 'all var(--transition-fast)'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = '#1877F2';
+                        e.currentTarget.style.color = '#FFFFFF';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = 'var(--color-surface-elevated)';
+                        e.currentTarget.style.color = 'var(--color-text-primary)';
+                      }}
+                    >
+                      <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <svg
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          style={{ width: '17px', height: '17px' }}
+                          aria-hidden="true"
+                        >
+                          <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+                        </svg>
+                        <span>Facebook</span>
+                      </span>
+                      <span style={{ fontSize: '12.5px', opacity: 0.85 }}>{siteSettings.social.facebookHandle}</span>
+                    </a>
+                  </div>
+                </div>
+              </div>
             </div>
 
             {/* Right Column: Interactive Proposal & Consultation Form */}
@@ -380,7 +406,7 @@ export default function ContactPage({ onOpenEnquiry }) {
                     />
                   </div>
 
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
+                  <div className="contact-form-row" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
                     <div>
                       <label style={{ display: 'block', fontSize: '13px', fontWeight: 800, color: 'var(--color-text-primary)', marginBottom: '6px' }}>
                         Phone / WhatsApp *
@@ -388,7 +414,7 @@ export default function ContactPage({ onOpenEnquiry }) {
                       <input
                         type="tel"
                         required
-                        placeholder="+91 98765..."
+                        placeholder="e.g. +91 77779 98789"
                         value={formData.phone}
                         onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                         style={{
@@ -422,7 +448,7 @@ export default function ContactPage({ onOpenEnquiry }) {
                     </div>
                   </div>
 
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
+                  <div className="contact-form-row" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
                     <div>
                       <label style={{ display: 'block', fontSize: '13px', fontWeight: 800, color: 'var(--color-text-primary)', marginBottom: '6px' }}>
                         Event Date
@@ -598,6 +624,14 @@ export default function ContactPage({ onOpenEnquiry }) {
           </div>
         </div>
       </section>
+
+      <style>{`
+        @media (max-width: 580px) {
+          .contact-form-row {
+            grid-template-columns: 1fr !important;
+          }
+        }
+      `}</style>
     </div>
   );
 }

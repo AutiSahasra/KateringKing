@@ -14,6 +14,10 @@ import {
 } from 'lucide-react';
 import api from '../../services/api';
 import { cateringPackages } from '../../data/mockData';
+import BufferingSpinner from '../common/BufferingSpinner';
+import ImageWithLoader from '../common/ImageWithLoader';
+
+const FALLBACK_DISH_IMG = 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=800&q=80';
 
 export default function Packages({ onOpenEnquiry }) {
   const defaultPopularIdx = cateringPackages.findIndex((p) => p.isPopular);
@@ -25,6 +29,7 @@ export default function Packages({ onOpenEnquiry }) {
   const [animating, setAnimating] = useState(false);
   const [userInteracted, setUserInteracted] = useState(0);
   const animTimeoutRef = useRef(null);
+  const tabsBarRef = useRef(null);
 
   useEffect(() => {
     async function loadPackages() {
@@ -42,7 +47,7 @@ export default function Packages({ onOpenEnquiry }) {
     loadPackages();
   }, []);
 
-  const currentPackage = packages[activePackageIndex] || null;
+  const currentPackage = packages[activePackageIndex] || packages[0] || null;
   const dishes = useMemo(() => currentPackage?.dishes || [], [currentPackage]);
   const currentDish = dishes[activeDishIndex] || dishes[0] || null;
 
@@ -56,7 +61,7 @@ export default function Packages({ onOpenEnquiry }) {
     }, 300);
   };
 
-  // Infinite loop auto-play timer: rotate dish every 2 seconds (2000ms) until user changes page
+  // Infinite loop auto-play timer: rotate dish every 3 seconds until user changes page
   useEffect(() => {
     if (dishes.length <= 1) return;
 
@@ -67,7 +72,7 @@ export default function Packages({ onOpenEnquiry }) {
       animTimeoutRef.current = setTimeout(() => {
         setAnimating(false);
       }, 500);
-    }, 2000);
+    }, 3000);
 
     return () => clearInterval(interval);
   }, [dishes.length, activePackageIndex, userInteracted]);
@@ -106,22 +111,39 @@ export default function Packages({ onOpenEnquiry }) {
   const plateCenterX = 400;
   const plateCenterY = 280;
 
-  const thumbnailPositions = useMemo(() => {
+  const maxVisibleNodes = 7;
+  const visibleDishesData = useMemo(() => {
     const total = dishes.length;
+    if (total === 0) return [];
+    if (total <= maxVisibleNodes) {
+      return dishes.map((dish, i) => ({ dish, index: i }));
+    }
+    // Calculate sliding window around activeDishIndex
+    const half = Math.floor(maxVisibleNodes / 2);
+    const result = [];
+    for (let offset = -half; offset <= half; offset++) {
+      const idx = (activeDishIndex + offset + total) % total;
+      result.push({ dish: dishes[idx], index: idx });
+    }
+    return result;
+  }, [dishes, activeDishIndex]);
+
+  const thumbnailPositions = useMemo(() => {
+    const total = visibleDishesData.length;
     if (total === 0) return [];
     const startAngle = -64; // top-left
     const endAngle = 64;    // bottom-left
     const step = total > 1 ? (endAngle - startAngle) / (total - 1) : 0;
 
-    return dishes.map((dish, i) => {
+    return visibleDishesData.map(({ dish, index }, i) => {
       const angleDeg = startAngle + i * step;
       const angleRad = (angleDeg * Math.PI) / 180;
       // Negative cos because thumbnails orbit on the left side of the plate center
       const x = plateCenterX - orbitalRadius * Math.cos(angleRad);
       const y = plateCenterY + orbitalRadius * Math.sin(angleRad);
-      return { dish, index: i, x, y, angleDeg };
+      return { dish, index, x, y, angleDeg };
     });
-  }, [dishes, orbitalRadius, plateCenterX, plateCenterY]);
+  }, [visibleDishesData, orbitalRadius, plateCenterX, plateCenterY]);
 
   if (!currentPackage || !currentDish) {
     return null;
@@ -168,23 +190,16 @@ export default function Packages({ onOpenEnquiry }) {
       <div className="container" style={{ position: 'relative', zIndex: 1 }}>
         {/* Section Heading */}
         <SectionHeading
-          kicker="Bespoke Banquet Collections"
           title="Curated Royal Banquet Packages"
           subtitle="Select a package tier to explore its signature live stations, royal courses, and on-site staging infrastructure."
         />
 
-        {/* 1. PACKAGE HEADER TABS (3 Package Headers) */}
+        {/* 1. PACKAGE HEADER TABS (Unified Single-Line Navigation Rail without Prices) */}
         <div
+          ref={tabsBarRef}
           role="tablist"
           aria-label="Catering Package Tiers"
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            flexWrap: 'wrap',
-            gap: '14px',
-            marginBottom: '48px'
-          }}
+          className="packages-tabs-bar"
         >
           {packages.map((pkg, idx) => {
             const isSelected = idx === activePackageIndex;
@@ -195,30 +210,25 @@ export default function Packages({ onOpenEnquiry }) {
                 role="tab"
                 aria-selected={isSelected}
                 onClick={() => handleSelectPackage(idx)}
+                className={`package-tab-btn ${isSelected ? 'active' : ''}`}
                 style={{
-                  padding: '14px 26px',
-                  borderRadius: 'var(--radius-full)',
                   border: isSelected
                     ? '2px solid var(--color-primary)'
                     : '1.5px solid var(--color-border-subtle)',
                   backgroundColor: isSelected ? '#0A0D12' : '#FFFFFF',
                   color: isSelected ? '#FFFFFF' : 'var(--color-text-primary)',
                   boxShadow: isSelected
-                    ? '0 10px 30px rgba(200, 138, 46, 0.35)'
+                    ? '0 10px 28px rgba(200, 138, 46, 0.35)'
                     : '0 4px 12px rgba(10, 13, 18, 0.05)',
                   cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '12px',
-                  transition: 'all var(--transition-smooth)',
                   position: 'relative'
                 }}
               >
-                {/* Crown or Tier Badge */}
+                {/* Crown Icon */}
                 <div
                   style={{
-                    width: '32px',
-                    height: '32px',
+                    width: '28px',
+                    height: '28px',
                     borderRadius: '50%',
                     backgroundColor: isSelected ? 'var(--color-primary)' : 'var(--color-accent-champagne)',
                     color: isSelected ? '#FFFFFF' : 'var(--color-primary)',
@@ -228,51 +238,45 @@ export default function Packages({ onOpenEnquiry }) {
                     flexShrink: 0
                   }}
                 >
-                  <Crown size={17} strokeWidth={2.4} />
+                  <Crown size={14} strokeWidth={2.4} />
                 </div>
 
-                {/* Package Label & Price */}
-                <div style={{ textAlign: 'left' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                {/* Package Label */}
+                <div style={{ textAlign: 'left', minWidth: 0, flex: 1 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'nowrap' }}>
                     <span
                       style={{
                         fontFamily: 'var(--font-serif)',
-                        fontSize: '17px',
+                        fontSize: '14px',
                         fontWeight: 800,
                         letterSpacing: '-0.01em',
-                        lineHeight: 1.15
+                        lineHeight: 1.2,
+                        whiteSpace: 'nowrap',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis'
                       }}
+                      title={pkg.name}
                     >
                       {pkg.name}
                     </span>
                     {pkg.isPopular && (
                       <span
                         style={{
-                          fontSize: '10px',
+                          fontSize: '8.5px',
                           fontWeight: 900,
-                          letterSpacing: '0.08em',
+                          letterSpacing: '0.06em',
                           textTransform: 'uppercase',
                           backgroundColor: 'var(--color-primary)',
                           color: '#FFFFFF',
-                          padding: '2px 8px',
-                          borderRadius: 'var(--radius-full)'
+                          padding: '1px 5px',
+                          borderRadius: 'var(--radius-full)',
+                          flexShrink: 0
                         }}
                       >
-                        Royal Pick
+                        Pick
                       </span>
                     )}
                   </div>
-                  <span
-                    style={{
-                      fontSize: '12px',
-                      fontWeight: 700,
-                      color: isSelected ? 'rgba(255,255,255,0.8)' : 'var(--color-primary)',
-                      display: 'block',
-                      marginTop: '2px'
-                    }}
-                  >
-                    {pkg.price} / {pkg.unit}
-                  </span>
                 </div>
               </button>
             );
@@ -287,7 +291,7 @@ export default function Packages({ onOpenEnquiry }) {
             borderRadius: 'var(--radius-xl)',
             border: '1.5px solid var(--color-border-subtle)',
             boxShadow: 'var(--shadow-card)',
-            padding: 'clamp(24px, 4vw, 52px)',
+            padding: 'clamp(24px, 4vw, 48px)',
             display: 'grid',
             gridTemplateColumns: 'minmax(320px, 480px) 1fr',
             gap: 'clamp(30px, 4vw, 60px)',
@@ -295,45 +299,69 @@ export default function Packages({ onOpenEnquiry }) {
             position: 'relative'
           }}
         >
-          {/* LEFT COLUMN: Package Overview & Active Dish Details */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '22px' }}>
-            {/* Package Context Pills */}
-            <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
-              <span
-                style={{
-                  fontSize: '11px',
-                  fontWeight: 900,
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.12em',
-                  color: 'var(--color-primary)',
-                  backgroundColor: 'var(--color-accent-champagne)',
-                  padding: '5px 14px',
-                  borderRadius: 'var(--radius-full)',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '6px'
-                }}
-              >
-                <Crown size={13} strokeWidth={2.5} />
-                {currentPackage.kicker}
-              </span>
+          {/* LEFT COLUMN: Constant Package Name Header & Active Dish Details */}
+          <div className="package-details-col" style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+            {/* Constant Package Name Header across all cards */}
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                flexWrap: 'wrap',
+                gap: '12px',
+                paddingBottom: '16px',
+                borderBottom: '1.5px solid var(--color-border-subtle)'
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <div
+                  style={{
+                    width: '32px',
+                    height: '32px',
+                    borderRadius: '50%',
+                    backgroundColor: 'var(--color-accent-champagne)',
+                    color: 'var(--color-primary)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexShrink: 0
+                  }}
+                >
+                  <Crown size={16} strokeWidth={2.4} />
+                </div>
+                <h2
+                  style={{
+                    fontFamily: 'var(--font-serif)',
+                    fontSize: 'clamp(18px, 2.2vw, 22px)',
+                    fontWeight: 900,
+                    color: 'var(--color-primary)',
+                    letterSpacing: '-0.01em',
+                    margin: 0,
+                    lineHeight: 1.2
+                  }}
+                >
+                  {currentPackage.name}
+                </h2>
+              </div>
+
               <span
                 style={{
                   fontSize: '12px',
-                  fontWeight: 700,
-                  color: 'var(--color-text-secondary)',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '5px'
+                  fontWeight: 800,
+                  color: 'var(--color-text-muted)',
+                  letterSpacing: '0.06em',
+                  textTransform: 'uppercase',
+                  backgroundColor: 'rgba(10, 13, 18, 0.04)',
+                  padding: '4px 10px',
+                  borderRadius: 'var(--radius-full)'
                 }}
               >
-                <Users size={14} color="var(--color-primary)" />
-                {currentPackage.minGuests}
+                Item {activeDishIndex + 1} of {dishes.length}
               </span>
             </div>
 
             {/* Dish Course & Dietary Badges */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginTop: '4px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginTop: '2px' }}>
               <span
                 style={{
                   fontSize: '12px',
@@ -398,51 +426,24 @@ export default function Packages({ onOpenEnquiry }) {
               </span>
             </div>
 
-            {/* Dish Name & Pricing */}
+            {/* Dish Name */}
             <div>
               <h3
                 key={`dish-name-${currentDish.id || activeDishIndex}`}
                 style={{
                   fontFamily: 'var(--font-serif)',
-                  fontSize: 'clamp(28px, 3.4vw, 42px)',
+                  fontSize: 'clamp(26px, 3.2vw, 38px)',
                   fontWeight: 900,
                   color: 'var(--color-text-primary)',
                   letterSpacing: '-0.02em',
                   lineHeight: 1.15,
-                  minHeight: '1.2em'
+                  minHeight: '1.2em',
+                  margin: 0
                 }}
                 className={animating ? 'dish-text-transition' : ''}
               >
                 {currentDish.name}
               </h3>
-
-              <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px', marginTop: '10px' }}>
-                <span
-                  style={{
-                    fontFamily: 'var(--font-serif)',
-                    fontSize: '32px',
-                    fontWeight: 900,
-                    color: 'var(--color-primary)'
-                  }}
-                >
-                  {currentPackage.price}
-                </span>
-                <span style={{ fontSize: '14px', fontWeight: 600, color: 'var(--color-text-muted)' }}>
-                  / {currentPackage.unit}
-                </span>
-                <span
-                  style={{
-                    marginLeft: 'auto',
-                    fontSize: '13px',
-                    fontWeight: 800,
-                    color: 'var(--color-primary)',
-                    letterSpacing: '0.06em',
-                    textTransform: 'uppercase'
-                  }}
-                >
-                  Course {activeDishIndex + 1} of {dishes.length}
-                </span>
-              </div>
             </div>
 
             {/* Chef Note / Preparation Highlight */}
@@ -473,12 +474,49 @@ export default function Packages({ onOpenEnquiry }) {
                 color: 'var(--color-text-secondary)',
                 lineHeight: 1.65,
                 margin: 0,
-                minHeight: '48px'
+                minHeight: '44px'
               }}
               className={animating ? 'dish-text-transition' : ''}
             >
               {currentDish.description}
             </p>
+
+            {/* Quick Dish Selection Chips (Scrollable menu bar of all package items) */}
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                overflowX: 'auto',
+                paddingBottom: '4px',
+                maxWidth: '100%',
+                scrollbarWidth: 'thin'
+              }}
+            >
+              {dishes.map((d, i) => {
+                const isCur = i === activeDishIndex;
+                return (
+                  <button
+                    key={d.id || i}
+                    onClick={() => triggerDishChange(i)}
+                    style={{
+                      whiteSpace: 'nowrap',
+                      padding: '5px 12px',
+                      borderRadius: 'var(--radius-full)',
+                      fontSize: '11px',
+                      fontWeight: isCur ? 800 : 600,
+                      border: isCur ? '1.5px solid var(--color-primary)' : '1px solid var(--color-border-subtle)',
+                      backgroundColor: isCur ? 'var(--color-primary)' : 'rgba(10, 13, 18, 0.04)',
+                      color: isCur ? '#FFFFFF' : 'var(--color-text-secondary)',
+                      cursor: 'pointer',
+                      transition: 'all var(--transition-fast)'
+                    }}
+                  >
+                    {d.name}
+                  </button>
+                );
+              })}
+            </div>
 
             {/* Controls: Stepper (Prev/Next) & Dish Progress Dots */}
             <div
@@ -492,7 +530,7 @@ export default function Packages({ onOpenEnquiry }) {
                 borderTop: '1px solid var(--color-border-subtle)'
               }}
             >
-              {/* Stepper Buttons (like in reference image) */}
+              {/* Stepper Buttons */}
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                 <button
                   onClick={handlePrevDish}
@@ -507,7 +545,8 @@ export default function Packages({ onOpenEnquiry }) {
                     color: 'var(--color-text-primary)',
                     fontWeight: 800,
                     fontSize: '13px',
-                    transition: 'all var(--transition-fast)'
+                    transition: 'all var(--transition-fast)',
+                    cursor: 'pointer'
                   }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.backgroundColor = 'var(--color-secondary)';
@@ -535,7 +574,8 @@ export default function Packages({ onOpenEnquiry }) {
                     color: 'var(--color-text-primary)',
                     fontWeight: 800,
                     fontSize: '13px',
-                    transition: 'all var(--transition-fast)'
+                    transition: 'all var(--transition-fast)',
+                    cursor: 'pointer'
                   }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.backgroundColor = 'var(--color-secondary)';
@@ -552,19 +592,20 @@ export default function Packages({ onOpenEnquiry }) {
               </div>
 
               {/* Progress Dots */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                {dishes.map((_, i) => (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', overflowX: 'hidden', maxWidth: '160px' }}>
+                {dishes.slice(0, 12).map((_, i) => (
                   <button
                     key={i}
                     onClick={() => triggerDishChange(i)}
                     aria-label={`Go to dish ${i + 1}`}
                     style={{
-                      width: i === activeDishIndex ? '24px' : '8px',
-                      height: '8px',
+                      width: i === activeDishIndex ? '20px' : '7px',
+                      height: '7px',
                       borderRadius: 'var(--radius-full)',
                       backgroundColor: i === activeDishIndex ? 'var(--color-primary)' : 'var(--color-border-subtle)',
                       transition: 'all var(--transition-fast)',
-                      padding: 0
+                      padding: 0,
+                      cursor: 'pointer'
                     }}
                   />
                 ))}
@@ -593,18 +634,6 @@ export default function Packages({ onOpenEnquiry }) {
                 </div>
               ))}
             </div>
-
-            {/* CTA Button */}
-            <div style={{ marginTop: '8px' }}>
-              <MagneticButton
-                className="btn btn-primary"
-                onClick={() => onOpenEnquiry(currentPackage)}
-                style={{ width: '100%', padding: '16px 28px', fontSize: '14px' }}
-              >
-                <span>Enquire For This Package</span>
-                <ArrowRight size={17} strokeWidth={2.5} />
-              </MagneticButton>
-            </div>
           </div>
 
           {/* RIGHT COLUMN: ORBITAL ARC & GRAND SERVING PLATTER */}
@@ -619,7 +648,7 @@ export default function Packages({ onOpenEnquiry }) {
               justifyContent: 'center'
             }}
           >
-            {/* Floating Culinary Garnishes (like leaves in the reference image) */}
+            {/* Floating Culinary Garnishes */}
             <div className="floating-garnish garnish-1" style={{ top: '8%', right: '14%' }}>
               <div
                 style={{
@@ -724,7 +753,7 @@ export default function Packages({ onOpenEnquiry }) {
 
                 return (
                   <button
-                    key={dish.id}
+                    key={`${dish.id}-${index}`}
                     onClick={() => triggerDishChange(index)}
                     aria-label={`Select ${dish.name}`}
                     title={dish.name}
@@ -734,8 +763,8 @@ export default function Packages({ onOpenEnquiry }) {
                       left: `${(x / 620) * 100}%`,
                       top: `${(y / 560) * 100}%`,
                       transform: `translate(-50%, -50%) scale(${isActive ? 1.24 : 1})`,
-                      width: '78px',
-                      height: '78px',
+                      width: '74px',
+                      height: '74px',
                       borderRadius: '50%',
                       padding: 0,
                       backgroundColor: '#FFFFFF',
@@ -758,9 +787,15 @@ export default function Packages({ onOpenEnquiry }) {
                         position: 'relative'
                       }}
                     >
-                      <img
+                      <ImageWithLoader
                         src={dish.image}
                         alt={dish.name}
+                        spinnerSize={22}
+                        containerStyle={{ borderRadius: '50%' }}
+                        onError={(e) => {
+                          e.currentTarget.onerror = null;
+                          e.currentTarget.src = FALLBACK_DISH_IMG;
+                        }}
                         style={{
                           width: '100%',
                           height: '100%',
@@ -800,7 +835,7 @@ export default function Packages({ onOpenEnquiry }) {
 
             {/* GRAND SERVING PLATTER (The large royal circular plate) */}
             <div
-              key={`platter-${currentDish.id}`}
+              key={`platter-${currentDish.id || activeDishIndex}`}
               className="grand-serving-platter"
               style={{
                 position: 'relative',
@@ -841,10 +876,16 @@ export default function Packages({ onOpenEnquiry }) {
                     boxShadow: 'inset 0 0 30px rgba(0,0,0,0.2)'
                   }}
                 >
-                  <img
-                    key={currentDish.id}
+                  <ImageWithLoader
+                    key={currentDish.id || activeDishIndex}
                     src={currentDish.image}
                     alt={currentDish.name}
+                    spinnerSize={54}
+                    containerStyle={{ borderRadius: '50%' }}
+                    onError={(e) => {
+                      e.currentTarget.onerror = null;
+                      e.currentTarget.src = FALLBACK_DISH_IMG;
+                    }}
                     className="grand-plate-image"
                     style={{
                       width: '100%',
@@ -872,6 +913,45 @@ export default function Packages({ onOpenEnquiry }) {
 
       {/* Embedded Component Styles & Keyframe Animations */}
       <style>{`
+        /* 1. Unified Single-Line Packages Tabs Rail */
+        .packages-tabs-bar {
+          display: flex !important;
+          flex-wrap: nowrap !important;
+          align-items: stretch !important;
+          justify-content: flex-start !important;
+          gap: 10px !important;
+          width: 100% !important;
+          max-width: 100% !important;
+          overflow-x: auto !important;
+          -webkit-overflow-scrolling: touch;
+          scrollbar-width: none;
+          padding: 6px 4px 18px 4px !important;
+          margin-bottom: 32px !important;
+        }
+
+        .packages-tabs-bar::-webkit-scrollbar {
+          display: none !important;
+          height: 0px !important;
+        }
+
+        .package-tab-btn {
+          flex: 1 1 0 !important;
+          min-width: 185px !important;
+          padding: 12px 16px !important;
+          border-radius: var(--radius-full) !important;
+          display: flex !important;
+          align-items: center !important;
+          gap: 10px !important;
+          white-space: nowrap !important;
+          transition: all var(--transition-smooth) !important;
+        }
+
+        .package-tab-btn:hover:not(.active) {
+          border-color: rgba(200, 138, 46, 0.6) !important;
+          transform: translateY(-2px);
+          box-shadow: 0 6px 20px rgba(10, 13, 18, 0.08) !important;
+        }
+
         @keyframes dishPlateReveal {
           0% {
             opacity: 0;
@@ -993,46 +1073,117 @@ export default function Packages({ onOpenEnquiry }) {
           transform: translate(-50%, -50%) scale(1.3) !important;
         }
 
-        /* Responsive Layout Stacking */
+        /* Responsive Layout Stacking for Tablet & Mobile */
         @media (max-width: 1024px) {
           .packages-interactive-grid {
-            grid-template-columns: 1fr !important;
-            gap: 40px !important;
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 32px !important;
+            padding: clamp(18px, 4vw, 36px) !important;
           }
 
           .orbital-showcase-container {
-            min-height: 480px !important;
+            order: 1 !important;
+            min-height: auto !important;
+            width: 100% !important;
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            justifyContent: center !important;
+            gap: 16px !important;
+            padding: 8px 0 !important;
+          }
+
+          .package-details-col {
+            order: 2 !important;
+            width: 100% !important;
           }
 
           .grand-serving-platter {
             left: 0 !important;
-            margin: 0 auto;
-            width: clamp(290px, 75vw, 390px) !important;
-            height: clamp(290px, 75vw, 390px) !important;
+            margin: 0 auto !important;
+            width: clamp(230px, 62vw, 350px) !important;
+            height: clamp(230px, 62vw, 350px) !important;
           }
 
           .orbital-arc-svg {
             display: none !important;
           }
 
+          .floating-garnish {
+            display: none !important;
+          }
+
           .orbital-thumbnails-layer {
             position: static !important;
+            inset: auto !important;
             display: flex !important;
-            justify-content: center !important;
-            flex-wrap: wrap !important;
+            justifyContent: flex-start !important;
+            align-items: center !important;
+            flex-wrap: nowrap !important;
+            overflow-x: auto !important;
+            -webkit-overflow-scrolling: touch;
+            scroll-snap-type: x mandatory;
+            padding: 12px 8px !important;
             gap: 14px !important;
-            margin-top: 28px !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            margin-top: 14px !important;
+            scrollbar-width: thin;
+            scrollbar-color: var(--color-primary) transparent;
+          }
+
+          .orbital-thumbnails-layer::-webkit-scrollbar {
+            height: 4px;
+          }
+
+          .orbital-thumbnails-layer::-webkit-scrollbar-thumb {
+            background-color: var(--color-primary);
+            border-radius: 9999px;
           }
 
           .orbital-node {
             position: static !important;
             transform: none !important;
-            width: 66px !important;
-            height: 66px !important;
+            width: 64px !important;
+            height: 64px !important;
+            flex-shrink: 0 !important;
+            scroll-snap-align: center;
           }
 
           .orbital-node:hover {
-            transform: scale(1.15) !important;
+            transform: scale(1.1) !important;
+          }
+        }
+
+        @media (max-width: 640px) {
+          .packages-tabs-bar {
+            gap: 8px !important;
+            padding-bottom: 12px !important;
+            margin-bottom: 20px !important;
+          }
+
+          .package-tab-btn {
+            min-width: 165px !important;
+            padding: 10px 14px !important;
+            gap: 8px !important;
+          }
+
+          .grand-serving-platter {
+            width: clamp(210px, 68vw, 290px) !important;
+            height: clamp(210px, 68vw, 290px) !important;
+          }
+
+          .orbital-node {
+            width: 56px !important;
+            height: 56px !important;
+          }
+
+          .orbital-node .active-crown-badge {
+            width: 20px !important;
+            height: 20px !important;
+            top: -6px !important;
+            right: -5px !important;
           }
         }
       `}</style>

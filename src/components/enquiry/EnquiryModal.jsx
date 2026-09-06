@@ -97,7 +97,7 @@ export default function EnquiryModal({ isOpen, onClose, preselectedPackage }) {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        padding: '16px',
+        padding: 'clamp(12px, 3vw, 24px)',
         overflowY: 'auto'
       }}
       onClick={onClose}
@@ -114,7 +114,7 @@ export default function EnquiryModal({ isOpen, onClose, preselectedPackage }) {
           overflowY: 'auto',
           boxShadow: 'var(--shadow-modal)',
           border: '1.5px solid rgba(200, 138, 46, 0.35)',
-          padding: 'clamp(24px, 4vw, 40px)'
+          padding: 'clamp(20px, 4vw, 36px) clamp(16px, 3.5vw, 32px)'
         }}
       >
         {/* Close Button */}
@@ -123,10 +123,10 @@ export default function EnquiryModal({ isOpen, onClose, preselectedPackage }) {
           aria-label="Close enquiry modal"
           style={{
             position: 'absolute',
-            top: '20px',
-            right: '20px',
-            width: '38px',
-            height: '38px',
+            top: '16px',
+            right: '16px',
+            width: '36px',
+            height: '36px',
             borderRadius: 'var(--radius-full)',
             backgroundColor: 'var(--color-surface-elevated)',
             color: 'var(--color-text-secondary)',
@@ -138,7 +138,7 @@ export default function EnquiryModal({ isOpen, onClose, preselectedPackage }) {
             zIndex: 10
           }}
         >
-          <X size={20} />
+          <X size={18} />
         </button>
 
         {showSuccess ? (
@@ -169,17 +169,17 @@ export default function EnquiryModal({ isOpen, onClose, preselectedPackage }) {
         ) : (
           <>
             {/* Header */}
-            <div style={{ marginBottom: '28px' }}>
+            <div style={{ marginBottom: '24px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
                 <Crown size={18} color="var(--color-primary)" />
                 <span style={{ fontSize: '12px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--color-primary)' }}>
                   White-Glove Hospitality Concierge
                 </span>
               </div>
-              <h2 id="enquiry-modal-title" style={{ fontSize: 'clamp(24px, 3.2vw, 32px)', color: 'var(--color-secondary)' }}>
+              <h2 id="enquiry-modal-title" style={{ fontSize: 'clamp(22px, 3.2vw, 30px)', color: 'var(--color-secondary)' }}>
                 Request Bespoke Catering Quote
               </h2>
-              <p style={{ fontSize: '14px', color: 'var(--color-text-secondary)', marginTop: '6px' }}>
+              <p style={{ fontSize: '13.5px', color: 'var(--color-text-secondary)', marginTop: '4px' }}>
                 Fill in your celebration details below. We instantly prepare a formal quote for your selected package on WhatsApp.
               </p>
             </div>
@@ -189,9 +189,9 @@ export default function EnquiryModal({ isOpen, onClose, preselectedPackage }) {
               <div
                 style={{
                   display: 'grid',
-                  gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-                  gap: '24px',
-                  marginBottom: '24px'
+                  gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 250px), 1fr))',
+                  gap: '18px',
+                  marginBottom: '20px'
                 }}
               >
                 {/* Field 1: Full Name */}
@@ -227,7 +227,7 @@ export default function EnquiryModal({ isOpen, onClose, preselectedPackage }) {
                   </label>
                   <input
                     type="tel"
-                    placeholder="e.g. +91 98765 43210"
+                    placeholder="e.g. +91 77779 98789"
                     {...register('phone', {
                       required: 'Phone number is required',
                       minLength: { value: 8, message: 'Please enter a valid phone number' }
@@ -268,7 +268,7 @@ export default function EnquiryModal({ isOpen, onClose, preselectedPackage }) {
                   >
                     {cateringPackages.map((p) => (
                       <option key={p.id} value={p.name}>
-                        {p.name} ({p.price} / {p.unit})
+                        {p.name}
                       </option>
                     ))}
                     <option value="Completely Bespoke Custom Menu">Completely Bespoke Custom Menu</option>

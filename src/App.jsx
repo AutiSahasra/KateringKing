@@ -3,6 +3,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
 import ScrollToTop from './components/common/ScrollToTop';
+import SocialRail from './components/common/SocialRail';
 import EnquiryModal from './components/enquiry/EnquiryModal';
 import HomePage from './pages/HomePage';
 import PackagesPage from './pages/PackagesPage';
@@ -34,6 +35,9 @@ export default function App() {
 
       {/* Navigation Header */}
       <Navbar onOpenEnquiry={handleOpenEnquiry} />
+
+      {/* Persistent Luxury Social & WhatsApp Right-Side Rail */}
+      <SocialRail />
 
       {/* Multi-Page Route Views */}
       <main>

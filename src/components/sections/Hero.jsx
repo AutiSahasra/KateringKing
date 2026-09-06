@@ -1,9 +1,10 @@
 import React, { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight, MessageCircle, Star, Award, ShieldCheck } from 'lucide-react';
+import { ArrowRight, MessageCircle, Star, ShieldCheck } from 'lucide-react';
 import MagneticButton from '../common/MagneticButton';
 import { trustStats } from '../../data/mockData';
 import { animateFadeUp, animateCounter } from '../../utils/animations';
+import ImageWithLoader from '../common/ImageWithLoader';
 
 export default function Hero({ onOpenEnquiry }) {
   const navigate = useNavigate();
@@ -64,28 +65,21 @@ export default function Hero({ onOpenEnquiry }) {
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))',
-            gap: 'clamp(44px, 6vw, 84px)',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 300px), 1fr))',
+            gap: 'clamp(32px, 5vw, 72px)',
             alignItems: 'center'
           }}
         >
           {/* Left Column: Bold & Huge Typography Hierarchy */}
           <div ref={leftColRef}>
-            <div style={{ marginBottom: '22px' }}>
-              <span className="badge-kicker">
-                <Award size={15} />
-                <span>Commercial-Grade Royal Banqueting • Est. 1999</span>
-              </span>
-            </div>
-
             <h1
               style={{
                 fontSize: 'var(--font-size-hero)',
                 fontWeight: 900,
                 color: 'var(--color-text-primary)',
-                lineHeight: 1.04,
+                lineHeight: 1.06,
                 letterSpacing: '-0.03em',
-                marginBottom: '28px'
+                marginBottom: '24px'
               }}
             >
               Royal Banquets Executed at{' '}
@@ -104,10 +98,10 @@ export default function Hero({ onOpenEnquiry }) {
             <p
               className="text-lead"
               style={{
-                fontSize: 'clamp(17px, 2vw, 20px)',
+                fontSize: 'clamp(16px, 1.8vw, 20px)',
                 color: 'var(--color-text-secondary)',
                 lineHeight: 1.65,
-                marginBottom: '40px',
+                marginBottom: '32px',
                 maxWidth: '600px',
                 fontWeight: 500
               }}
@@ -117,40 +111,33 @@ export default function Hero({ onOpenEnquiry }) {
 
             {/* CTAs */}
             <div
+              className="hero-cta-group"
               style={{
                 display: 'flex',
                 flexWrap: 'wrap',
-                gap: '18px',
+                gap: '14px',
                 alignItems: 'center',
-                marginBottom: '56px'
+                marginBottom: '44px'
               }}
             >
               <MagneticButton
                 className="btn btn-primary"
                 onClick={() => navigate('/packages')}
-                style={{ padding: '16px 36px', fontSize: '15px' }}
+                style={{ padding: '15px 30px', fontSize: '14px' }}
               >
                 <span>Explore Banquet Packages</span>
-                <ArrowRight size={18} strokeWidth={2.5} />
-              </MagneticButton>
-
-              <MagneticButton
-                className="btn btn-secondary"
-                onClick={() => onOpenEnquiry(null)}
-                style={{ padding: '15px 30px', fontSize: '15px' }}
-              >
-                <MessageCircle size={18} color="var(--color-primary)" strokeWidth={2.5} />
-                <span>Instant WhatsApp Quote</span>
+                <ArrowRight size={17} strokeWidth={2.5} />
               </MagneticButton>
             </div>
 
             {/* Live Trust Metrics Strip */}
             <div
+              className="hero-stats-grid"
               style={{
                 display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(115px, 1fr))',
-                gap: '24px',
-                paddingTop: '32px',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(105px, 1fr))',
+                gap: '18px',
+                paddingTop: '28px',
                 borderTop: '2px solid var(--color-border-subtle)'
               }}
             >
@@ -229,9 +216,11 @@ export default function Hero({ onOpenEnquiry }) {
                 backgroundColor: 'var(--color-secondary)'
               }}
             >
-              <img
+              <ImageWithLoader
                 src="https://images.unsplash.com/photo-1555244162-803834f70033?auto=format&fit=crop&w=1000&q=85"
                 alt="Exquisite royal banquet staging and culinary production"
+                theme="dark"
+                spinnerSize={50}
                 style={{
                   width: '100%',
                   height: 'clamp(380px, 50vw, 580px)',
@@ -275,43 +264,63 @@ export default function Hero({ onOpenEnquiry }) {
 
             {/* Floating Top Pill: Production Badge */}
             <div
+              className="hero-floating-badge"
               style={{
                 position: 'absolute',
-                top: '24px',
-                left: '-15px',
+                top: '16px',
+                left: '16px',
                 zIndex: 3,
                 backgroundColor: 'rgba(255, 255, 255, 0.98)',
                 backdropFilter: 'blur(12px)',
-                padding: '12px 20px',
+                padding: '10px 18px',
                 borderRadius: 'var(--radius-full)',
                 boxShadow: '0 12px 30px rgba(0,0,0,0.15)',
                 border: '1.5px solid var(--color-border-subtle)',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '10px'
+                gap: '10px',
+                maxWidth: 'calc(100% - 32px)'
               }}
             >
               <div
                 style={{
-                  width: '32px',
-                  height: '32px',
+                  width: '30px',
+                  height: '30px',
                   borderRadius: 'var(--radius-full)',
                   background: 'var(--color-accent-champagne)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  color: 'var(--color-primary)'
+                  color: 'var(--color-primary)',
+                  flexShrink: 0
                 }}
               >
-                <ShieldCheck size={18} strokeWidth={2.5} />
+                <ShieldCheck size={17} strokeWidth={2.5} />
               </div>
-              <span style={{ fontSize: '14px', fontWeight: 800, color: 'var(--color-secondary)' }}>
+              <span style={{ fontSize: '13px', fontWeight: 800, color: 'var(--color-secondary)' }}>
                 12,000 Sq.Ft Base Kitchen • ISO 22000
               </span>
             </div>
           </div>
         </div>
       </div>
+
+      <style>{`
+        @media (max-width: 640px) {
+          .hero-cta-group {
+            flex-direction: column !important;
+            align-items: stretch !important;
+            width: 100% !important;
+          }
+          .hero-cta-group .btn {
+            width: 100% !important;
+          }
+          .hero-stats-grid {
+            grid-template-columns: repeat(2, 1fr) !important;
+            gap: 16px !important;
+          }
+        }
+      `}</style>
     </section>
   );
 }

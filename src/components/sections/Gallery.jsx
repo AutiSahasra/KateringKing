@@ -1,21 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import SectionHeading from '../common/SectionHeading';
-import { X, ChevronLeft, ChevronRight, Eye, Sparkles } from 'lucide-react';
+import BufferingSpinner from '../common/BufferingSpinner';
+import ImageWithLoader from '../common/ImageWithLoader';
+import { X, ChevronLeft, ChevronRight, Eye } from 'lucide-react';
 import { galleryCategories } from '../../data/mockData';
 import api from '../../services/api';
 
 export default function Gallery() {
   const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState('all');
   const [selectedItem, setSelectedItem] = useState(null);
 
   useEffect(() => {
     async function loadGallery() {
       try {
+        setLoading(true);
         const data = await api.getGalleryItems();
         setItems(data);
       } catch (err) {
         console.error('Failed to load gallery items:', err);
+      } finally {
+        setLoading(false);
       }
     }
     loadGallery();
@@ -41,11 +47,13 @@ export default function Gallery() {
   const currentIndex = items.findIndex((i) => i.id === selectedItem?.id);
 
   const handleNext = () => {
+    if (items.length === 0) return;
     const nextIdx = (currentIndex + 1) % items.length;
     setSelectedItem(items[nextIdx]);
   };
 
   const handlePrev = () => {
+    if (items.length === 0) return;
     const prevIdx = (currentIndex - 1 + items.length) % items.length;
     setSelectedItem(items[prevIdx]);
   };
@@ -54,19 +62,22 @@ export default function Gallery() {
     <section id="gallery" className="section-padding" style={{ backgroundColor: 'var(--color-surface-elevated)' }}>
       <div className="container">
         <SectionHeading
-          kicker="Visual Splendor & Culinary Staging"
-          title="The Royal Banqueting Gallery"
-          subtitle="Inspect high-resolution captures of our live banquet spreads, handcrafted pastries, and grand ballrooms designed to enchant every guest."
+          kicker="Visual Portfolio"
+          title="See Our Work"
+          subtitle="Explore high-resolution photographs of our royal banquets, wedding catering, live culinary stations, and culinary brigade."
         />
 
-        {/* Category Filters */}
+        {/* Category Filters Bar */}
         <div
+          className="gallery-filters-bar"
           style={{
             display: 'flex',
             flexWrap: 'wrap',
             justifyContent: 'center',
-            gap: '12px',
-            marginBottom: '52px'
+            gap: '8px',
+            marginBottom: '36px',
+            overflowX: 'auto',
+            paddingBottom: '4px'
           }}
         >
           {galleryCategories.map((cat) => {
@@ -77,17 +88,19 @@ export default function Gallery() {
                 key={cat.id}
                 onClick={() => setActiveCategory(cat.id)}
                 style={{
-                  padding: '11px 24px',
+                  padding: '8px 18px',
                   borderRadius: 'var(--radius-full)',
                   fontSize: '13px',
-                  fontWeight: 800,
-                  letterSpacing: '0.06em',
-                  textTransform: 'uppercase',
+                  fontWeight: 700,
+                  letterSpacing: '0.02em',
                   transition: 'all var(--transition-fast)',
                   backgroundColor: isActive ? 'var(--color-primary)' : 'var(--color-surface-card)',
                   color: isActive ? '#FFFFFF' : 'var(--color-text-primary)',
-                  border: isActive ? '2px solid var(--color-primary)' : '1.5px solid var(--color-border-subtle)',
-                  boxShadow: isActive ? '0 6px 18px rgba(200, 138, 46, 0.35)' : 'var(--shadow-subtle)'
+                  border: isActive ? '1.5px solid var(--color-primary)' : '1px solid var(--color-border-subtle)',
+                  boxShadow: isActive ? '0 4px 14px rgba(200, 138, 46, 0.35)' : 'var(--shadow-subtle)',
+                  cursor: 'pointer',
+                  whiteSpace: 'nowrap',
+                  minHeight: '38px'
                 }}
               >
                 {cat.label}
@@ -96,87 +109,136 @@ export default function Gallery() {
           })}
         </div>
 
-        {/* Masonry / Grid */}
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(290px, 1fr))',
-            gap: '28px'
-          }}
-        >
-          {filteredItems.map((item) => (
-            <div
-              key={item.id}
-              onClick={() => setSelectedItem(item)}
-              style={{
-                position: 'relative',
-                borderRadius: 'var(--radius-md)',
-                overflow: 'hidden',
-                backgroundColor: 'var(--color-secondary)',
-                cursor: 'pointer',
-                aspectRatio: '4 / 3',
-                boxShadow: 'var(--shadow-subtle)',
-                border: '1.5px solid var(--color-border-subtle)'
-              }}
-              className="gallery-card"
-            >
-              <img
-                src={item.image}
-                alt={item.title}
-                loading="lazy"
-                style={{
-                  width: '100%',
-                  height: '100%',
-                  objectFit: 'cover',
-                  transition: 'transform 0.5s ease'
-                }}
-              />
-
-              {/* Hover Overlay with Bold Typography */}
+        {/* Buffering Loading State */}
+        {loading ? (
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: '80px 20px',
+              minHeight: '360px',
+              backgroundColor: '#FFFFFF',
+              borderRadius: 'var(--radius-xl)',
+              border: '1.5px solid var(--color-border-subtle)',
+              boxShadow: 'var(--shadow-card)'
+            }}
+          >
+            <BufferingSpinner size={52} label="Loading Visual Portfolio Images..." />
+          </div>
+        ) : (
+          /* Visual Portfolio Grid with Buffering Image Loaders */
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 280px), 1fr))',
+              gap: '20px'
+            }}
+          >
+            {filteredItems.map((item) => (
               <div
+                key={item.id}
+                onClick={() => setSelectedItem(item)}
                 style={{
-                  position: 'absolute',
-                  inset: 0,
-                  backgroundColor: 'rgba(10, 13, 18, 0.82)',
-                  opacity: 0,
-                  transition: 'opacity var(--transition-fast)',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'flex-end',
-                  padding: '26px',
-                  color: '#FFFFFF'
+                  position: 'relative',
+                  borderRadius: 'var(--radius-lg)',
+                  overflow: 'hidden',
+                  backgroundColor: '#0A0D12',
+                  cursor: 'pointer',
+                  aspectRatio: '4 / 3',
+                  boxShadow: '0 8px 24px rgba(10, 13, 18, 0.08)',
+                  border: '1px solid var(--color-border-subtle)'
                 }}
-                className="gallery-overlay"
+                className="gallery-card"
               >
+                <ImageWithLoader
+                  src={item.image}
+                  alt={item.title}
+                  loading="lazy"
+                  theme="dark"
+                  spinnerSize={34}
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'cover',
+                    transition: 'transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)'
+                  }}
+                />
+
+                {/* Category Pill on Card */}
                 <div
                   style={{
                     position: 'absolute',
-                    top: '16px',
-                    right: '16px',
-                    width: '40px',
-                    height: '40px',
+                    top: '12px',
+                    left: '12px',
+                    backgroundColor: 'rgba(10, 13, 18, 0.75)',
+                    backdropFilter: 'blur(8px)',
+                    border: '1px solid rgba(200, 138, 46, 0.35)',
                     borderRadius: 'var(--radius-full)',
-                    background: 'var(--color-primary)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: '#FFFFFF',
-                    boxShadow: '0 4px 14px rgba(200, 138, 46, 0.5)'
+                    padding: '4px 10px',
+                    fontSize: '11px',
+                    fontWeight: 700,
+                    color: '#EED7B0',
+                    letterSpacing: '0.04em',
+                    textTransform: 'uppercase',
+                    zIndex: 2,
+                    pointerEvents: 'none'
                   }}
                 >
-                  <Eye size={20} />
+                  {item.categoryLabel || item.category}
                 </div>
 
-                <h4 style={{ fontSize: '20px', fontWeight: 800, color: '#FFFFFF', marginBottom: '6px', lineHeight: 1.25 }}>
-                  {item.title}
-                </h4>
-                <p style={{ fontSize: '13px', color: 'rgba(255,255,255,0.8)', lineHeight: 1.45 }}>
-                  {item.caption}
-                </p>
+                {/* Hover Overlay with Clean Title and Zoom Action */}
+                <div
+                  style={{
+                    position: 'absolute',
+                    inset: 0,
+                    backgroundColor: 'rgba(10, 13, 18, 0.78)',
+                    backdropFilter: 'blur(3px)',
+                    opacity: 0,
+                    transition: 'opacity 0.25s ease',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'flex-end',
+                    padding: '20px',
+                    color: '#FFFFFF',
+                    zIndex: 3
+                  }}
+                  className="gallery-overlay"
+                >
+                  <div
+                    style={{
+                      position: 'absolute',
+                      top: '12px',
+                      right: '12px',
+                      width: '38px',
+                      height: '38px',
+                      borderRadius: 'var(--radius-full)',
+                      background: 'var(--color-primary)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      color: '#FFFFFF',
+                      boxShadow: '0 4px 14px rgba(200, 138, 46, 0.5)'
+                    }}
+                  >
+                    <Eye size={18} />
+                  </div>
+
+                  <h4 style={{ fontSize: '16.5px', fontWeight: 800, color: '#FFFFFF', marginBottom: '4px', lineHeight: 1.25 }}>
+                    {item.title}
+                  </h4>
+                  {item.caption && (
+                    <p style={{ fontSize: '12px', color: 'rgba(255,255,255,0.8)', margin: 0, lineHeight: 1.4 }}>
+                      {item.caption}
+                    </p>
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Fullscreen Lightbox Modal */}
@@ -194,7 +256,7 @@ export default function Gallery() {
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
-            padding: '24px'
+            padding: '16px'
           }}
           onClick={() => setSelectedItem(null)}
         >
@@ -204,21 +266,22 @@ export default function Gallery() {
             aria-label="Close image lightbox"
             style={{
               position: 'absolute',
-              top: '24px',
-              right: '24px',
-              width: '50px',
-              height: '50px',
+              top: '16px',
+              right: '16px',
+              width: '44px',
+              height: '44px',
               borderRadius: 'var(--radius-full)',
-              backgroundColor: 'rgba(255, 255, 255, 0.12)',
+              backgroundColor: 'rgba(255, 255, 255, 0.15)',
               color: '#FFFFFF',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              border: '1.5px solid rgba(255, 255, 255, 0.25)',
-              cursor: 'pointer'
+              border: '1.5px solid rgba(255, 255, 255, 0.3)',
+              cursor: 'pointer',
+              zIndex: 10
             }}
           >
-            <X size={26} />
+            <X size={22} />
           </button>
 
           {/* Prev Button */}
@@ -230,11 +293,11 @@ export default function Gallery() {
             aria-label="Previous photo"
             style={{
               position: 'absolute',
-              left: '24px',
+              left: '12px',
               top: '50%',
               transform: 'translateY(-50%)',
-              width: '54px',
-              height: '54px',
+              width: '46px',
+              height: '46px',
               borderRadius: 'var(--radius-full)',
               backgroundColor: 'rgba(10, 13, 18, 0.85)',
               border: '1.5px solid var(--color-primary)',
@@ -242,10 +305,11 @@ export default function Gallery() {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              cursor: 'pointer'
+              cursor: 'pointer',
+              zIndex: 10
             }}
           >
-            <ChevronLeft size={30} strokeWidth={2.5} />
+            <ChevronLeft size={26} strokeWidth={2.5} />
           </button>
 
           {/* Next Button */}
@@ -257,11 +321,11 @@ export default function Gallery() {
             aria-label="Next photo"
             style={{
               position: 'absolute',
-              right: '24px',
+              right: '12px',
               top: '50%',
               transform: 'translateY(-50%)',
-              width: '54px',
-              height: '54px',
+              width: '46px',
+              height: '46px',
               borderRadius: 'var(--radius-full)',
               backgroundColor: 'rgba(10, 13, 18, 0.85)',
               border: '1.5px solid var(--color-primary)',
@@ -269,10 +333,11 @@ export default function Gallery() {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              cursor: 'pointer'
+              cursor: 'pointer',
+              zIndex: 10
             }}
           >
-            <ChevronRight size={30} strokeWidth={2.5} />
+            <ChevronRight size={26} strokeWidth={2.5} />
           </button>
 
           {/* Lightbox Content Container */}
@@ -284,26 +349,38 @@ export default function Gallery() {
               maxHeight: '86vh',
               display: 'flex',
               flexDirection: 'column',
-              alignItems: 'center'
+              alignItems: 'center',
+              padding: '0 8px'
             }}
           >
-            <img
-              src={selectedItem.image}
-              alt={selectedItem.title}
+            <div
               style={{
                 maxWidth: '100%',
-                maxHeight: '70vh',
-                objectFit: 'contain',
+                maxHeight: '62vh',
+                position: 'relative',
                 borderRadius: 'var(--radius-md)',
+                overflow: 'hidden',
                 boxShadow: '0 25px 60px rgba(0,0,0,0.85)',
                 border: '2px solid rgba(200, 138, 46, 0.4)'
               }}
-            />
-            <div style={{ marginTop: '22px', textAlign: 'center', color: '#FFFFFF' }}>
-              <h3 style={{ fontSize: '28px', color: '#FFFFFF', fontWeight: 900, marginBottom: '8px' }}>
+            >
+              <ImageWithLoader
+                src={selectedItem.image}
+                alt={selectedItem.title}
+                theme="dark"
+                spinnerSize={48}
+                style={{
+                  maxWidth: '100%',
+                  maxHeight: '62vh',
+                  objectFit: 'contain'
+                }}
+              />
+            </div>
+            <div style={{ marginTop: '18px', textAlign: 'center', color: '#FFFFFF' }}>
+              <h3 style={{ fontSize: 'clamp(20px, 3.5vw, 26px)', color: '#FFFFFF', fontWeight: 900, marginBottom: '6px' }}>
                 {selectedItem.title}
               </h3>
-              <p style={{ fontSize: '15px', color: 'rgba(255,255,255,0.78)', maxWidth: '640px' }}>
+              <p style={{ fontSize: '13.5px', color: 'rgba(255,255,255,0.78)', maxWidth: '640px' }}>
                 {selectedItem.caption}
               </p>
             </div>

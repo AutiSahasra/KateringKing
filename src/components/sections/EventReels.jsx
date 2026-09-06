@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import SectionHeading from '../common/SectionHeading';
-import { Play, Pause, MapPin, Users, Sparkles, Volume2, VolumeX, ArrowRight } from 'lucide-react';
+import { Play, Pause, MapPin, Users, Sparkles, Volume2, VolumeX } from 'lucide-react';
 import { eventReels } from '../../data/mockData';
+import ImageWithLoader from '../common/ImageWithLoader';
 
 export default function EventReels({ onOpenEnquiry }) {
   const [activeReelId, setActiveReelId] = useState(eventReels[0]?.id);
@@ -48,8 +49,8 @@ export default function EventReels({ onOpenEnquiry }) {
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-            gap: 'clamp(36px, 5vw, 68px)',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 300px), 1fr))',
+            gap: 'clamp(32px, 5vw, 64px)',
             alignItems: 'center'
           }}
         >
@@ -65,10 +66,12 @@ export default function EventReels({ onOpenEnquiry }) {
             }}
           >
             {/* Visual Poster */}
-            <div style={{ position: 'relative', height: 'clamp(380px, 46vw, 520px)', overflow: 'hidden' }}>
-              <img
+            <div style={{ position: 'relative', height: 'clamp(340px, 46vw, 520px)', overflow: 'hidden' }}>
+              <ImageWithLoader
                 src={currentReel.thumbnail}
                 alt={currentReel.title}
+                theme="dark"
+                spinnerSize={46}
                 style={{
                   width: '100%',
                   height: '100%',
@@ -92,12 +95,13 @@ export default function EventReels({ onOpenEnquiry }) {
               <div
                 style={{
                   position: 'absolute',
-                  top: '20px',
-                  left: '20px',
-                  right: '20px',
+                  top: '14px',
+                  left: '14px',
+                  right: '14px',
                   display: 'flex',
                   justifyContent: 'space-between',
                   alignItems: 'center',
+                  gap: '8px',
                   zIndex: 2
                 }}
               >
@@ -107,18 +111,18 @@ export default function EventReels({ onOpenEnquiry }) {
                     backdropFilter: 'blur(10px)',
                     border: '1.5px solid rgba(200, 138, 46, 0.45)',
                     borderRadius: 'var(--radius-full)',
-                    padding: '7px 16px',
-                    fontSize: '12px',
+                    padding: '6px 14px',
+                    fontSize: '11px',
                     color: 'var(--color-primary)',
                     fontWeight: 800,
                     textTransform: 'uppercase',
-                    letterSpacing: '0.1em',
+                    letterSpacing: '0.08em',
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '8px'
+                    gap: '6px'
                   }}
                 >
-                  <Sparkles size={14} />
+                  <Sparkles size={13} />
                   <span>{currentReel.highlightTag}</span>
                 </div>
 
@@ -126,8 +130,8 @@ export default function EventReels({ onOpenEnquiry }) {
                   onClick={() => setIsMuted(!isMuted)}
                   aria-label={isMuted ? 'Unmute event sound' : 'Mute event sound'}
                   style={{
-                    width: '40px',
-                    height: '40px',
+                    width: '38px',
+                    height: '38px',
                     borderRadius: 'var(--radius-full)',
                     backgroundColor: 'rgba(10, 13, 18, 0.85)',
                     backdropFilter: 'blur(10px)',
@@ -138,7 +142,7 @@ export default function EventReels({ onOpenEnquiry }) {
                     justifyContent: 'center'
                   }}
                 >
-                  {isMuted ? <VolumeX size={18} /> : <Volume2 size={18} color="var(--color-primary)" />}
+                  {isMuted ? <VolumeX size={17} /> : <Volume2 size={17} color="var(--color-primary)" />}
                 </button>
               </div>
 
@@ -157,8 +161,8 @@ export default function EventReels({ onOpenEnquiry }) {
                   onClick={() => setIsPlaying(!isPlaying)}
                   aria-label={isPlaying ? 'Pause event clip' : 'Play event clip'}
                   style={{
-                    width: '80px',
-                    height: '80px',
+                    width: 'clamp(60px, 14vw, 76px)',
+                    height: 'clamp(60px, 14vw, 76px)',
                     borderRadius: 'var(--radius-full)',
                     background: 'linear-gradient(135deg, var(--color-primary), #B97A1E)',
                     color: '#FFFFFF',
@@ -173,9 +177,9 @@ export default function EventReels({ onOpenEnquiry }) {
                   onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
                 >
                   {isPlaying ? (
-                    <Pause size={32} fill="#FFFFFF" />
+                    <Pause size={28} fill="#FFFFFF" />
                   ) : (
-                    <Play size={32} fill="#FFFFFF" style={{ marginLeft: '4px' }} />
+                    <Play size={28} fill="#FFFFFF" style={{ marginLeft: '3px' }} />
                   )}
                 </button>
               </div>
@@ -184,23 +188,23 @@ export default function EventReels({ onOpenEnquiry }) {
               <div
                 style={{
                   position: 'absolute',
-                  bottom: '24px',
-                  left: '24px',
-                  right: '24px',
+                  bottom: '16px',
+                  left: '16px',
+                  right: '16px',
                   zIndex: 2
                 }}
               >
-                <div style={{ display: 'flex', gap: '18px', fontSize: '13px', color: 'rgba(255,255,255,0.85)', marginBottom: '8px', fontWeight: 600 }}>
-                  <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <MapPin size={15} color="var(--color-primary)" />
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '14px', fontSize: '12px', color: 'rgba(255,255,255,0.85)', marginBottom: '6px', fontWeight: 600 }}>
+                  <span style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                    <MapPin size={14} color="var(--color-primary)" />
                     {currentReel.location}
                   </span>
-                  <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <Users size={15} color="var(--color-primary)" />
+                  <span style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                    <Users size={14} color="var(--color-primary)" />
                     {currentReel.guests}
                   </span>
                 </div>
-                <h3 style={{ fontSize: '26px', color: '#FFFFFF', fontWeight: 900, lineHeight: 1.2 }}>
+                <h3 style={{ fontSize: 'clamp(18px, 3.5vw, 24px)', color: '#FFFFFF', fontWeight: 900, lineHeight: 1.25 }}>
                   {currentReel.title}
                 </h3>
               </div>
@@ -302,15 +306,6 @@ export default function EventReels({ onOpenEnquiry }) {
                 );
               })}
             </div>
-
-            <button
-              className="btn btn-primary"
-              onClick={() => onOpenEnquiry({ name: currentReel.title })}
-              style={{ width: '100%', padding: '16px', fontSize: '14px' }}
-            >
-              <span>Enquire For Similar Event Setup</span>
-              <ArrowRight size={18} strokeWidth={2.5} />
-            </button>
           </div>
         </div>
       </div>

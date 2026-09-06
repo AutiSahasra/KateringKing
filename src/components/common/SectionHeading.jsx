@@ -17,22 +17,6 @@ export default function SectionHeading({
         margin: centered ? '0 auto 64px' : '0 0 48px',
       }}
     >
-      {kicker && (
-        <div style={{ marginBottom: '18px' }}>
-          <span
-            className="badge-kicker"
-            style={{
-              backgroundColor: isDark ? 'rgba(200, 138, 46, 0.16)' : 'var(--color-accent-champagne)',
-              color: isDark ? 'var(--color-primary)' : '#8C550A',
-              borderColor: isDark ? 'rgba(200, 138, 46, 0.4)' : 'rgba(200, 138, 46, 0.35)',
-              fontWeight: 800
-            }}
-          >
-            {kicker}
-          </span>
-        </div>
-      )}
-
       <h2
         style={{
           fontSize: 'var(--font-size-h1)',

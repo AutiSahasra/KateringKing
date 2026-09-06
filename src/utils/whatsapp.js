@@ -1,5 +1,8 @@
+import { WHATSAPP_NUMBER } from '../data/mockData';
+
 /**
  * Generates formatted WhatsApp URL with pre-filled enquiry text
+ * Recipient is always the business number (917777998789), while client data is encoded in the message body.
  */
 export const generateWhatsAppUrl = ({
   name,
@@ -10,9 +13,9 @@ export const generateWhatsAppUrl = ({
   guests,
   location,
   notes
-}) => {
-  const businessNumber = import.meta.env.VITE_WHATSAPP_NUMBER || '919876543210';
-  const cleanNumber = businessNumber.replace(/[^0-9]/g, '');
+} = {}) => {
+  // Always sanitize recipient to digits only (e.g. 917777998789)
+  const recipient = (import.meta.env.VITE_WHATSAPP_NUMBER || WHATSAPP_NUMBER || '917777998789').replace(/[^0-9]/g, '');
 
   const message = [
     `👑 *NEW CATERING ENQUIRY — KateringKing* 👑`,
@@ -20,21 +23,21 @@ export const generateWhatsAppUrl = ({
     `Hello Team KateringKing, I would like to request a bespoke catering quote for my upcoming event.`,
     ``,
     `📋 *EVENT DETAILS*`,
-    `• *Client Name:* ${name || 'N/A'}`,
-    `• *Contact:* ${phone || 'N/A'}`,
-    `• *Selected Package:* ${packageName}`,
-    `• *Event Type:* ${eventType}`,
+    `• *Client Name:* ${name ? name.trim() : 'N/A'}`,
+    `• *Client Phone / WhatsApp:* ${phone ? phone.trim() : 'N/A'}`,
+    `• *Selected Package:* ${packageName || 'Custom Culinary Package'}`,
+    `• *Event Type:* ${eventType || 'Celebration'}`,
     `• *Event Date:* ${eventDate || 'To be decided'}`,
     `• *Estimated Guests:* ${guests || 'N/A'}`,
     `• *Venue / Location:* ${location || 'N/A'}`,
-    notes ? `• *Special Notes / Menu Preferences:* ${notes}` : null,
+    notes && notes.trim() ? `• *Special Notes / Menu Preferences:* ${notes.trim()}` : null,
     ``,
     `Kindly share your package menu brochure and availability. Thank you!`
   ]
     .filter(Boolean)
     .join('\n');
 
-  return `https://wa.me/${cleanNumber}?text=${encodeURIComponent(message)}`;
+  return `https://wa.me/${recipient}?text=${encodeURIComponent(message)}`;
 };
 
 /**

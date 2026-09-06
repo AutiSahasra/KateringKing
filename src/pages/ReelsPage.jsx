@@ -2,7 +2,7 @@ import React from 'react';
 import EventReels from '../components/sections/EventReels';
 import SectionHeading from '../components/common/SectionHeading';
 import MagneticButton from '../components/common/MagneticButton';
-import { Video, Sparkles, Crown, Play, Eye, PhoneCall, ArrowRight } from 'lucide-react';
+import { Sparkles, PhoneCall } from 'lucide-react';
 
 export default function ReelsPage({ onOpenEnquiry }) {
   const highlights = [
@@ -24,67 +24,7 @@ export default function ReelsPage({ onOpenEnquiry }) {
   ];
 
   return (
-    <div className="page-reels" style={{ paddingTop: 'calc(var(--navbar-height) + 32px)' }}>
-      {/* Page Hero Header */}
-      <section
-        style={{
-          padding: '60px 0 40px',
-          background: 'radial-gradient(ellipse at 50% 0%, rgba(200, 138, 46, 0.12) 0%, transparent 70%), var(--color-neutral-canvas)',
-          textAlign: 'center',
-          position: 'relative'
-        }}
-      >
-        <div className="container">
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
-            <span
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '6px',
-                padding: '6px 18px',
-                borderRadius: 'var(--radius-full)',
-                backgroundColor: 'rgba(200, 138, 46, 0.14)',
-                color: 'var(--color-primary)',
-                fontSize: '12px',
-                fontWeight: 800,
-                letterSpacing: '0.08em',
-                textTransform: 'uppercase'
-              }}
-            >
-              <Video size={14} />
-              <span>Remotion-Inspired Event Reels</span>
-            </span>
-          </div>
-
-          <h1
-            style={{
-              fontFamily: 'var(--font-serif)',
-              fontSize: 'clamp(36px, 4.5vw, 58px)',
-              fontWeight: 900,
-              color: 'var(--color-text-primary)',
-              letterSpacing: '-0.025em',
-              lineHeight: 1.1,
-              maxWidth: '880px',
-              margin: '0 auto 20px'
-            }}
-          >
-            Cinematic Live Banquet Storytelling
-          </h1>
-
-          <p
-            style={{
-              fontSize: 'clamp(16px, 1.8vw, 19px)',
-              color: 'var(--color-text-secondary)',
-              maxWidth: '740px',
-              margin: '0 auto',
-              lineHeight: 1.65
-            }}
-          >
-            Experience the vibrant choreography, sizzling embers, and sensory theatre of our high-volume banquet productions captured live in motion.
-          </p>
-        </div>
-      </section>
-
+    <div className="page-reels" style={{ paddingTop: 'var(--navbar-height)' }}>
       {/* Main Interactive Event Reels Showcase */}
       <EventReels onOpenEnquiry={onOpenEnquiry} />
 
@@ -100,9 +40,9 @@ export default function ReelsPage({ onOpenEnquiry }) {
           <div
             style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 290px), 1fr))',
               gap: '28px',
-              marginTop: '48px'
+              marginTop: '40px'
             }}
           >
             {highlights.map((h, i) => (

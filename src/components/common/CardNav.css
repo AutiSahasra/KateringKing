@@ -414,55 +414,104 @@
 }
 
 .card-nav-mobile-drawer .mobile-cta {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
   width: 100%;
-  padding: 14px;
+  padding: 14px 20px;
   height: auto;
+  font-size: 14px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  background: linear-gradient(135deg, #E2A84E 0%, #986315 100%);
+  color: #FFFFFF;
+  border-radius: var(--radius-full);
+  box-shadow: 0 4px 20px rgba(200, 138, 46, 0.45);
+  margin-top: 4px;
 }
 
 /* Mobile Breakpoint Adjustments */
 @media (max-width: 1023px) {
   .card-nav-container {
-    width: 92%;
-    top: 1rem;
+    width: calc(100% - 24px);
+    max-width: 100%;
+    top: 0.75rem;
   }
 
   .card-nav {
-    height: 64px;
-    padding: 0 1rem;
+    height: 62px;
+    padding: 0 0.9rem;
   }
 
   .card-nav.is-scrolled {
-    height: 56px;
-    padding: 0 0.85rem;
+    height: 54px;
+    padding: 0 0.8rem;
   }
 
   .logo {
-    height: 38px;
+    height: 36px;
   }
 
   .card-nav.is-scrolled .logo {
-    height: 32px;
+    height: 30px;
   }
 
-  .card-nav-cta-button {
-    display: none;
+  /* Hide header CTA in navbar bar on mobile so hamburger has full room, CTA is inside mobile drawer */
+  .card-nav-right-actions > .card-nav-cta-button {
+    display: none !important;
+  }
+
+  .navbar-brand-lockup {
+    gap: 10px;
   }
 
   .brand-emblem {
-    height: 42px;
-    width: 42px;
+    height: 38px;
+    width: 38px;
   }
 
   .card-nav.is-scrolled .brand-emblem {
-    height: 36px;
-    width: 36px;
+    height: 32px;
+    width: 32px;
   }
 
   .brand-wordmark {
-    height: 38px;
+    height: 34px;
   }
 
   .card-nav.is-scrolled .brand-wordmark {
-    height: 32px;
+    height: 28px;
+  }
+
+  .card-nav-mobile-drawer {
+    max-height: calc(100vh - 90px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+@media (max-width: 420px) {
+  .card-nav-container {
+    width: calc(100% - 16px);
+    top: 0.5rem;
+  }
+
+  .card-nav {
+    height: 58px;
+    padding: 0 0.75rem;
+  }
+
+  .navbar-brand-lockup {
+    gap: 6px;
+  }
+
+  .brand-emblem {
+    height: 34px;
+    width: 34px;
+  }
+
+  .brand-wordmark {
+    height: 28px;
   }
 }

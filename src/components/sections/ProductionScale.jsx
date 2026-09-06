@@ -4,13 +4,7 @@ import {
   Building2, 
   Truck, 
   ShieldCheck, 
-  Flame, 
-  Users2, 
-  Sparkles, 
-  CheckCircle2, 
-  Layers,
-  ThermometerSnowflake,
-  Timer
+  Users2 
 } from 'lucide-react';
 import { animateFadeUp } from '../../utils/animations';
 
@@ -57,33 +51,6 @@ export default function ProductionScale({ onOpenEnquiry }) {
     }
   ];
 
-  const productionPhases = [
-    {
-      step: 'PHASE 01',
-      title: 'Procurement & Farm Sourcing',
-      timing: 'T - 48 Hours',
-      desc: 'Single-origin spices from Kerala & Kashmir, organic farm greens delivered at 4:00 AM, and premium seafood/poultry under strict temperature tags.'
-    },
-    {
-      step: 'PHASE 02',
-      title: 'Precision Commercial Prep',
-      timing: 'T - 24 Hours',
-      desc: '72-hour dough fermentation, 18-hour sealed copper deg marinations, handcrafted dessert prep in sterile climate-controlled confectionary suites.'
-    },
-    {
-      step: 'PHASE 03',
-      title: 'Convoys & On-Site Staging',
-      timing: 'T - 6 Hours',
-      desc: 'Convoy arrives at palace or venue. On-site field kitchens deploy induction warmers, blast chillers, and 40+ themed theatrical live counters.'
-    },
-    {
-      step: 'PHASE 04',
-      title: 'Synchronized Butler Execution',
-      timing: 'Live Banquet',
-      desc: 'Synchronized silver cloche reveal, 1:8 butler-to-guest ratio for high tables, on-site master chef tasting check every 15 minutes.'
-    }
-  ];
-
   return (
     <section id="production" ref={sectionRef} className="section-padding" style={{ backgroundColor: 'var(--color-neutral-canvas)' }}>
       <div className="container">
@@ -98,9 +65,8 @@ export default function ProductionScale({ onOpenEnquiry }) {
           ref={cardsRef}
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-            gap: '28px',
-            marginBottom: '72px'
+            gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 260px), 1fr))',
+            gap: '24px'
           }}
         >
           {productionMetrics.map((item, idx) => (
@@ -109,7 +75,7 @@ export default function ProductionScale({ onOpenEnquiry }) {
               style={{
                 backgroundColor: 'var(--color-surface-card)',
                 borderRadius: 'var(--radius-lg)',
-                padding: '36px 28px',
+                padding: 'clamp(24px, 4vw, 36px) 24px',
                 border: '1.5px solid var(--color-border-subtle)',
                 boxShadow: 'var(--shadow-card)',
                 display: 'flex',
@@ -129,14 +95,14 @@ export default function ProductionScale({ onOpenEnquiry }) {
               <div>
                 <div
                   style={{
-                    width: '56px',
-                    height: '56px',
+                    width: '52px',
+                    height: '52px',
                     borderRadius: 'var(--radius-md)',
                     backgroundColor: 'var(--color-accent-champagne)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    marginBottom: '24px'
+                    marginBottom: '20px'
                   }}
                 >
                   {item.icon}
@@ -146,7 +112,7 @@ export default function ProductionScale({ onOpenEnquiry }) {
                   <span
                     style={{
                       fontFamily: 'var(--font-serif)',
-                      fontSize: '36px',
+                      fontSize: '32px',
                       fontWeight: 900,
                       color: 'var(--color-text-primary)',
                       lineHeight: 1
@@ -154,17 +120,17 @@ export default function ProductionScale({ onOpenEnquiry }) {
                   >
                     {item.metric}
                   </span>
-                  <span style={{ fontSize: '12px', fontWeight: 800, color: 'var(--color-primary)', letterSpacing: '0.08em' }}>
+                  <span style={{ fontSize: '11px', fontWeight: 800, color: 'var(--color-primary)', letterSpacing: '0.08em' }}>
                     {item.unit}
                   </span>
                 </div>
 
                 <h3
                   style={{
-                    fontSize: '20px',
+                    fontSize: '19px',
                     fontWeight: 800,
                     color: 'var(--color-text-primary)',
-                    marginBottom: '12px',
+                    marginBottom: '10px',
                     lineHeight: 1.25
                   }}
                 >
@@ -177,144 +143,6 @@ export default function ProductionScale({ onOpenEnquiry }) {
               </div>
             </div>
           ))}
-        </div>
-
-        {/* Detailed Timeline Breakdown: From Kitchen to Royal Banquet Table */}
-        <div
-          style={{
-            backgroundColor: 'var(--color-secondary)',
-            borderRadius: 'var(--radius-xl)',
-            padding: 'clamp(36px, 6vw, 64px)',
-            color: '#FFFFFF',
-            boxShadow: 'var(--shadow-modal)',
-            position: 'relative',
-            overflow: 'hidden'
-          }}
-        >
-          {/* Ambient Glow */}
-          <div
-            style={{
-              position: 'absolute',
-              top: '-100px',
-              right: '-100px',
-              width: '400px',
-              height: '400px',
-              background: 'radial-gradient(circle, rgba(200, 138, 46, 0.18) 0%, transparent 70%)',
-              pointerEvents: 'none'
-            }}
-          />
-
-          <div style={{ maxWidth: '780px', marginBottom: '48px' }}>
-            <span
-              className="badge-kicker"
-              style={{
-                backgroundColor: 'rgba(200, 138, 46, 0.15)',
-                color: 'var(--color-primary)',
-                borderColor: 'rgba(200, 138, 46, 0.3)',
-                marginBottom: '16px'
-              }}
-            >
-              Standard Operating Protocol
-            </span>
-            <h3
-              style={{
-                fontSize: 'clamp(28px, 4vw, 44px)',
-                fontWeight: 900,
-                color: '#FFFFFF',
-                lineHeight: 1.15,
-                letterSpacing: '-0.02em',
-                marginBottom: '16px'
-              }}
-            >
-              How 1,500 Dignitaries Are Served Without a Single Flaw
-            </h3>
-            <p style={{ color: 'rgba(255, 255, 255, 0.78)', fontSize: '16px', lineHeight: 1.65 }}>
-              Precision timing is as critical as our secret spices. Our culinary operations follow an unyielding four-stage countdown ensuring hot courses stay scorching, salads stay chilled, and desserts retain their artisan sculpture.
-            </p>
-          </div>
-
-          {/* 4 Production Stages */}
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(230px, 1fr))',
-              gap: '24px',
-              position: 'relative',
-              zIndex: 1
-            }}
-          >
-            {productionPhases.map((phase, i) => (
-              <div
-                key={i}
-                style={{
-                  backgroundColor: 'rgba(255, 255, 255, 0.04)',
-                  border: '1px solid rgba(200, 138, 46, 0.25)',
-                  borderRadius: 'var(--radius-lg)',
-                  padding: '28px 22px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'space-between'
-                }}
-              >
-                <div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
-                    <span style={{ fontSize: '11px', fontWeight: 800, color: 'var(--color-primary)', letterSpacing: '0.1em' }}>
-                      {phase.step}
-                    </span>
-                    <span
-                      style={{
-                        fontSize: '11px',
-                        backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                        padding: '4px 10px',
-                        borderRadius: 'var(--radius-full)',
-                        color: 'rgba(255, 255, 255, 0.75)',
-                        fontWeight: 600
-                      }}
-                    >
-                      {phase.timing}
-                    </span>
-                  </div>
-
-                  <h4 style={{ fontSize: '18px', fontWeight: 800, color: '#FFFFFF', marginBottom: '10px' }}>
-                    {phase.title}
-                  </h4>
-
-                  <p style={{ fontSize: '13px', color: 'rgba(255, 255, 255, 0.68)', lineHeight: 1.6 }}>
-                    {phase.desc}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Action Row */}
-          <div
-            style={{
-              marginTop: '48px',
-              paddingTop: '32px',
-              borderTop: '1px solid rgba(255, 255, 255, 0.1)',
-              display: 'flex',
-              flexWrap: 'wrap',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              gap: '20px'
-            }}
-          >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <CheckCircle2 size={20} color="var(--color-primary)" />
-              <span style={{ fontSize: '14px', fontWeight: 600, color: 'rgba(255, 255, 255, 0.85)' }}>
-                Certified Safe for VIP High-Security Galas & Destination Banquets
-              </span>
-            </div>
-
-            <button
-              className="btn btn-primary"
-              onClick={() => onOpenEnquiry(null)}
-              style={{ padding: '14px 28px' }}
-            >
-              <span>Schedule Commercial Facility Tour</span>
-            </button>
-          </div>
         </div>
       </div>
     </section>

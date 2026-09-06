@@ -35,9 +35,9 @@ export default function Footer({ onOpenEnquiry }) {
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
-            gap: '48px',
-            marginBottom: '64px'
+            gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 240px), 1fr))',
+            gap: 'clamp(32px, 5vw, 48px)',
+            marginBottom: '48px'
           }}
         >
           {/* Col 1: Brand & Heritage */}
@@ -69,10 +69,10 @@ export default function Footer({ onOpenEnquiry }) {
                 href={siteSettings.social.instagram}
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label="Instagram"
+                aria-label="Visit KateringKing on Instagram"
                 style={{
-                  width: '38px',
-                  height: '38px',
+                  width: '40px',
+                  height: '40px',
                   borderRadius: 'var(--radius-full)',
                   backgroundColor: 'rgba(255, 255, 255, 0.06)',
                   border: '1px solid rgba(200, 138, 46, 0.25)',
@@ -82,63 +82,27 @@ export default function Footer({ onOpenEnquiry }) {
                   color: 'var(--color-primary)',
                   transition: 'all var(--transition-fast)'
                 }}
-                onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'var(--color-primary)', e.currentTarget.style.color = '#fff')}
-                onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.06)', e.currentTarget.style.color = 'var(--color-primary)')}
-              >
-                <Instagram size={18} />
-              </a>
-              <a
-                href={siteSettings.social.twitter}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Twitter / X"
-                style={{
-                  width: '38px',
-                  height: '38px',
-                  borderRadius: 'var(--radius-full)',
-                  backgroundColor: 'rgba(255, 255, 255, 0.06)',
-                  border: '1px solid rgba(200, 138, 46, 0.25)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  color: 'var(--color-primary)',
-                  transition: 'all var(--transition-fast)'
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = '#E1306C';
+                  e.currentTarget.style.color = '#FFFFFF';
+                  e.currentTarget.style.borderColor = '#E1306C';
                 }}
-                onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'var(--color-primary)', e.currentTarget.style.color = '#fff')}
-                onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.06)', e.currentTarget.style.color = 'var(--color-primary)')}
-              >
-                <Twitter size={18} />
-              </a>
-              <a
-                href={siteSettings.social.linkedin}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="LinkedIn"
-                style={{
-                  width: '38px',
-                  height: '38px',
-                  borderRadius: 'var(--radius-full)',
-                  backgroundColor: 'rgba(255, 255, 255, 0.06)',
-                  border: '1px solid rgba(200, 138, 46, 0.25)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  color: 'var(--color-primary)',
-                  transition: 'all var(--transition-fast)'
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.06)';
+                  e.currentTarget.style.color = 'var(--color-primary)';
+                  e.currentTarget.style.borderColor = 'rgba(200, 138, 46, 0.25)';
                 }}
-                onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'var(--color-primary)', e.currentTarget.style.color = '#fff')}
-                onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.06)', e.currentTarget.style.color = 'var(--color-primary)')}
               >
-                <Linkedin size={18} />
+                <Instagram size={19} />
               </a>
               <a
                 href={siteSettings.social.whatsapp}
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label="WhatsApp"
+                aria-label="Chat with KateringKing on WhatsApp"
                 style={{
-                  width: '38px',
-                  height: '38px',
+                  width: '40px',
+                  height: '40px',
                   borderRadius: 'var(--radius-full)',
                   backgroundColor: 'rgba(255, 255, 255, 0.06)',
                   border: '1px solid rgba(200, 138, 46, 0.25)',
@@ -148,10 +112,59 @@ export default function Footer({ onOpenEnquiry }) {
                   color: 'var(--color-primary)',
                   transition: 'all var(--transition-fast)'
                 }}
-                onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#25D366', e.currentTarget.style.color = '#fff')}
-                onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.06)', e.currentTarget.style.color = 'var(--color-primary)')}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = '#25D366';
+                  e.currentTarget.style.color = '#FFFFFF';
+                  e.currentTarget.style.borderColor = '#25D366';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.06)';
+                  e.currentTarget.style.color = 'var(--color-primary)';
+                  e.currentTarget.style.borderColor = 'rgba(200, 138, 46, 0.25)';
+                }}
               >
-                <MessageCircle size={18} />
+                <MessageCircle size={19} />
+              </a>
+              <a
+                href={siteSettings.social.facebook}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Visit KateringKing on Facebook"
+                style={{
+                  width: '40px',
+                  height: '40px',
+                  borderRadius: 'var(--radius-full)',
+                  backgroundColor: 'rgba(255, 255, 255, 0.06)',
+                  border: '1px solid rgba(200, 138, 46, 0.25)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: 'var(--color-primary)',
+                  transition: 'all var(--transition-fast)'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = '#1877F2';
+                  e.currentTarget.style.color = '#FFFFFF';
+                  e.currentTarget.style.borderColor = '#1877F2';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.06)';
+                  e.currentTarget.style.color = 'var(--color-primary)';
+                  e.currentTarget.style.borderColor = 'rgba(200, 138, 46, 0.25)';
+                }}
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  style={{ width: '19px', height: '19px' }}
+                  aria-hidden="true"
+                >
+                  <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+                </svg>
               </a>
             </div>
           </div>
@@ -203,7 +216,14 @@ export default function Footer({ onOpenEnquiry }) {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', fontSize: '14px', color: 'rgba(255, 255, 255, 0.75)' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                 <Phone size={16} color="var(--color-primary)" />
-                <span>{siteSettings.phone}</span>
+                <a
+                  href={`tel:${siteSettings.phone.replace(/\s+/g, '')}`}
+                  style={{ color: 'inherit', textDecoration: 'none', transition: 'color var(--transition-fast)' }}
+                  onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--color-primary)')}
+                  onMouseLeave={(e) => (e.currentTarget.style.color = 'inherit')}
+                >
+                  {siteSettings.phoneDisplay || siteSettings.phone}
+                </a>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                 <Mail size={16} color="var(--color-primary)" />
@@ -216,22 +236,14 @@ export default function Footer({ onOpenEnquiry }) {
             </div>
           </div>
 
-          {/* Col 4: VIP Reservation CTA */}
+          {/* Col 4: VIP Reservation Info */}
           <div>
             <h4 style={{ fontSize: '18px', color: '#FFFFFF', marginBottom: '16px', letterSpacing: '0.02em' }}>
               Plan Your Celebration
             </h4>
-            <p style={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '13px', lineHeight: 1.6, marginBottom: '20px' }}>
+            <p style={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '13px', lineHeight: 1.6, margin: 0 }}>
               Reserve your event date with our executive culinary director. We orchestrate menus customized to your heritage and palate.
             </p>
-            <button
-              className="btn btn-primary"
-              onClick={() => onOpenEnquiry(null)}
-              style={{ width: '100%', fontSize: '13px', padding: '12px 20px' }}
-            >
-              <Sparkles size={16} />
-              <span>Instant WhatsApp Enquiry</span>
-            </button>
           </div>
         </div>
 

@@ -1,0 +1,468 @@
+/* Floating Dynamic Shrink-on-Scroll Navbar Container */
+.card-nav-container {
+  position: fixed;
+  top: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 95%;
+  max-width: 1140px;
+  z-index: 1000;
+  box-sizing: border-box;
+  transition: top 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              max-width 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.card-nav-container.is-scrolled {
+  top: 0.85rem;
+  max-width: 1020px;
+}
+
+/* Navbar Base - Floating Pill Dock */
+.card-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 82px;
+  padding: 0 1.6rem;
+  background-color: rgba(18, 20, 26, 0.96);
+  border: 1.5px solid rgba(200, 138, 46, 0.4);
+  border-radius: 9999px;
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.6), 0 2px 8px rgba(0, 0, 0, 0.4);
+  position: relative;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  transition: height 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              padding 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.3s ease,
+              box-shadow 0.35s ease,
+              background-color 0.35s ease;
+}
+
+.card-nav.is-scrolled {
+  height: 64px;
+  padding: 0 1.3rem;
+  border-color: rgba(200, 138, 46, 0.6);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.7), 0 1px 4px rgba(0, 0, 0, 0.4);
+  background-color: rgba(15, 17, 22, 0.98);
+}
+
+/* Brand Logo Section (Original Logo Img) */
+.logo-container {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  user-select: none;
+}
+
+.logo-link {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+.navbar-brand-lockup {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.brand-emblem {
+  height: 54px;
+  width: 54px;
+  object-fit: contain;
+  display: block;
+  flex-shrink: 0;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.brand-emblem:hover {
+  transform: scale(1.06);
+  filter: drop-shadow(0 0 10px rgba(200, 138, 46, 0.5));
+}
+
+.card-nav.is-scrolled .brand-emblem {
+  height: 42px;
+  width: 42px;
+}
+
+.brand-wordmark {
+  height: 48px;
+  width: auto;
+  object-fit: contain;
+  display: block;
+  flex-shrink: 0;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.brand-wordmark:hover {
+  filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
+}
+
+.card-nav.is-scrolled .brand-wordmark {
+  height: 36px;
+}
+
+.logo {
+  height: 50px;
+  width: auto;
+  object-fit: contain;
+  display: block;
+  border-radius: 8px;
+  transition: height 0.35s cubic-bezier(0.16, 1, 0.3, 1), transform 0.2s ease;
+}
+
+.logo:hover {
+  transform: scale(1.02);
+}
+
+.card-nav.is-scrolled .logo {
+  height: 40px;
+}
+
+/* Center Navigation: Clean Buttons Container */
+.card-nav-links {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: gap 0.3s ease;
+}
+
+@media (min-width: 1024px) {
+  .card-nav-links {
+    display: flex;
+  }
+}
+
+.card-nav.is-scrolled .card-nav-links {
+  gap: 4px;
+}
+
+/* Simple Clean Navbar Button */
+.card-nav-button {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 18px;
+  color: #F0F2F5;
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  font-size: 13.5px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border-radius: 8px;
+  background-color: transparent;
+  white-space: nowrap;
+  user-select: none;
+  overflow: hidden;
+  transition: color 0.25s ease, background-color 0.25s ease, transform 0.2s ease;
+}
+
+.card-nav.is-scrolled .card-nav-button {
+  padding: 7px 14px;
+  font-size: 12.5px;
+}
+
+.nav-btn-text {
+  position: relative;
+  z-index: 2;
+  transition: transform 0.2s ease, color 0.25s ease;
+}
+
+/* Hover State */
+.card-nav-button:hover {
+  color: #FFFFFF;
+  background-color: rgba(200, 138, 46, 0.1);
+  transform: translateY(-1px);
+}
+
+.card-nav-button:hover .nav-btn-text {
+  color: #FFFFFF;
+}
+
+/* Active State */
+.card-nav-button.active {
+  color: #C88A2E;
+  font-weight: 800;
+}
+
+.card-nav-button.active .nav-btn-text {
+  color: #C88A2E;
+}
+
+/* Horizontal Loader Line (Animated on Hover) */
+.nav-btn-loader {
+  position: absolute;
+  bottom: 4px;
+  left: 14px;
+  right: 14px;
+  height: 2px;
+  border-radius: 9999px;
+  background-color: rgba(255, 255, 255, 0.06);
+  overflow: hidden;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.22s ease;
+}
+
+.card-nav.is-scrolled .nav-btn-loader {
+  bottom: 3px;
+  left: 10px;
+  right: 10px;
+}
+
+/* Loader Fill Bar */
+.nav-btn-loader::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, #C88A2E 0%, #FFDF99 50%, #C88A2E 100%);
+  transform: translateX(-101%);
+  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+  box-shadow: 0 0 8px rgba(200, 138, 46, 0.8);
+}
+
+/* When Button is Hovered -> Horizontal Loader Progresses Across */
+.card-nav-button:hover .nav-btn-loader {
+  opacity: 1;
+}
+
+.card-nav-button:hover .nav-btn-loader::after {
+  transform: translateX(0%);
+}
+
+/* Active Button State -> Loader stays locked at 100% with gold accent */
+.card-nav-button.active .nav-btn-loader {
+  opacity: 1;
+  background-color: rgba(200, 138, 46, 0.22);
+}
+
+.card-nav-button.active .nav-btn-loader::after {
+  transform: translateX(0%);
+  background: #C88A2E;
+  box-shadow: 0 0 10px rgba(200, 138, 46, 0.9);
+}
+
+/* Right Actions (CTA + Mobile Toggle) */
+.card-nav-right-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+/* CTA Button - Royal Gold Gradient Pill */
+.card-nav-cta-button {
+  background: linear-gradient(135deg, #DF9E38, #B37722);
+  color: #FFFFFF;
+  border: 1.5px solid rgba(255, 255, 255, 0.25);
+  border-radius: 9999px;
+  padding: 0 1.5rem;
+  height: 46px;
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  font-weight: 800;
+  font-size: 13px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 4px 18px rgba(200, 138, 46, 0.45);
+  white-space: nowrap;
+}
+
+.card-nav.is-scrolled .card-nav-cta-button {
+  height: 38px;
+  padding: 0 1.2rem;
+  font-size: 12px;
+  box-shadow: 0 3px 12px rgba(200, 138, 46, 0.35);
+}
+
+.card-nav-cta-button:hover {
+  background: linear-gradient(135deg, #E8AB48, #C48328);
+  transform: translateY(-1.5px);
+  box-shadow: 0 6px 22px rgba(200, 138, 46, 0.6);
+}
+
+.card-nav-cta-button:active {
+  transform: translateY(0);
+}
+
+/* Mobile Toggle */
+.card-nav-mobile-toggle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  gap: 5px;
+  width: 42px;
+  height: 42px;
+  border-radius: 9999px;
+  border: 1px solid rgba(200, 138, 46, 0.35);
+  background: rgba(200, 138, 46, 0.1);
+  transition: all 0.2s ease;
+}
+
+@media (min-width: 1024px) {
+  .card-nav-mobile-toggle {
+    display: none !important;
+  }
+}
+
+.card-nav.is-scrolled .card-nav-mobile-toggle {
+  width: 38px;
+  height: 38px;
+}
+
+.card-nav-mobile-toggle:hover {
+  background-color: rgba(200, 138, 46, 0.22);
+  border-color: rgba(200, 138, 46, 0.55);
+}
+
+.hamburger-line {
+  width: 20px;
+  height: 2px;
+  background-color: #FFFFFF;
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease;
+  transform-origin: 50% 50%;
+}
+
+.card-nav-mobile-toggle.open .hamburger-line:first-child {
+  transform: translateY(3.5px) rotate(45deg);
+}
+
+.card-nav-mobile-toggle.open .hamburger-line:last-child {
+  transform: translateY(-3.5px) rotate(-45deg);
+}
+
+/* Mobile Dropdown Drawer */
+.card-nav-mobile-drawer {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 0;
+  right: 0;
+  background-color: rgba(14, 16, 21, 0.98);
+  border: 1.5px solid rgba(200, 138, 46, 0.4);
+  border-radius: 1.5rem;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  z-index: 999;
+}
+
+@media (min-width: 1024px) {
+  .card-nav-mobile-drawer {
+    display: none !important;
+  }
+}
+
+.card-nav-mobile-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.mobile-nav-button {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  color: #F0F2F5;
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  font-size: 14.5px;
+  font-weight: 700;
+  text-decoration: none;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+.mobile-nav-button:hover,
+.mobile-nav-button.active {
+  color: #C88A2E;
+  background-color: rgba(200, 138, 46, 0.12);
+}
+
+.mobile-nav-button .nav-btn-loader {
+  bottom: 0;
+  left: 16px;
+  right: 16px;
+}
+
+.mobile-nav-button:hover .nav-btn-loader,
+.mobile-nav-button.active .nav-btn-loader {
+  opacity: 1;
+}
+
+.mobile-nav-button:hover .nav-btn-loader::after,
+.mobile-nav-button.active .nav-btn-loader::after {
+  transform: translateX(0%);
+}
+
+.card-nav-mobile-drawer .mobile-cta {
+  width: 100%;
+  padding: 14px;
+  height: auto;
+}
+
+/* Mobile Breakpoint Adjustments */
+@media (max-width: 1023px) {
+  .card-nav-container {
+    width: 92%;
+    top: 1rem;
+  }
+
+  .card-nav {
+    height: 64px;
+    padding: 0 1rem;
+  }
+
+  .card-nav.is-scrolled {
+    height: 56px;
+    padding: 0 0.85rem;
+  }
+
+  .logo {
+    height: 38px;
+  }
+
+  .card-nav.is-scrolled .logo {
+    height: 32px;
+  }
+
+  .card-nav-cta-button {
+    display: none;
+  }
+
+  .brand-emblem {
+    height: 42px;
+    width: 42px;
+  }
+
+  .card-nav.is-scrolled .brand-emblem {
+    height: 36px;
+    width: 36px;
+  }
+
+  .brand-wordmark {
+    height: 38px;
+  }
+
+  .card-nav.is-scrolled .brand-wordmark {
+    height: 32px;
+  }
+}

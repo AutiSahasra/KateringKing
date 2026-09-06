@@ -45,7 +45,19 @@ export const animateFadeUp = (elements, options = {}) => {
 /**
  * Animate number count-up for legacy trust stats
  */
-export const animateCounter = (element, targetValue, suffix = '', duration = 2) => {
+export const animateCounter = (element, targetValue, suffixOrOptions = '', duration = 2) => {
+  let suffix = '';
+  let dur = duration;
+  let decimals = targetValue % 1 !== 0 ? 1 : 0;
+
+  if (typeof suffixOrOptions === 'object' && suffixOrOptions !== null) {
+    suffix = suffixOrOptions.suffix || '';
+    dur = suffixOrOptions.duration || duration;
+    if (suffixOrOptions.decimals !== undefined) decimals = suffixOrOptions.decimals;
+  } else {
+    suffix = suffixOrOptions || '';
+  }
+
   if (isReducedMotion() || !element) {
     if (element) element.textContent = `${targetValue}${suffix}`;
     return;
@@ -54,7 +66,7 @@ export const animateCounter = (element, targetValue, suffix = '', duration = 2) 
   const obj = { val: 0 };
   gsap.to(obj, {
     val: targetValue,
-    duration,
+    duration: dur,
     ease: 'power2.out',
     scrollTrigger: {
       trigger: element,
@@ -62,7 +74,8 @@ export const animateCounter = (element, targetValue, suffix = '', duration = 2) 
       once: true
     },
     onUpdate: () => {
-      element.textContent = `${Math.floor(obj.val)}${suffix}`;
+      const displayVal = decimals > 0 ? obj.val.toFixed(decimals) : Math.floor(obj.val);
+      element.textContent = `${displayVal}${suffix}`;
     }
   });
 };

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import SectionHeading from '../components/common/SectionHeading';
 import MagneticButton from '../components/common/MagneticButton';
 import {
@@ -16,9 +16,14 @@ import {
   ChevronDown,
   ArrowRight
 } from 'lucide-react';
-import { siteSettings } from '../data/mockData';
+import { siteSettings as initialSiteSettings } from '../data/mockData';
+import { api, faqData as initialFaqData, formOptionsData as initialFormOptions } from '../services/api';
 
 export default function ContactPage({ onOpenEnquiry }) {
+  const [settings, setSettings] = useState(initialSiteSettings);
+  const [faqs, setFaqs] = useState(initialFaqData);
+  const [formOptions, setFormOptions] = useState(initialFormOptions);
+
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
@@ -30,6 +35,18 @@ export default function ContactPage({ onOpenEnquiry }) {
   });
   const [submitted, setSubmitted] = useState(false);
   const [openFaq, setOpenFaq] = useState(0);
+
+  useEffect(() => {
+    api.getFaqs().then((data) => {
+      if (data && Array.isArray(data) && data.length > 0) setFaqs(data);
+    });
+    api.getFormOptions().then((data) => {
+      if (data && data.eventTypes && data.guestRanges) setFormOptions(data);
+    });
+    api.getSiteSettings().then((data) => {
+      if (data) setSettings(data);
+    });
+  }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -55,30 +72,11 @@ export default function ContactPage({ onOpenEnquiry }) {
       .filter(Boolean)
       .join('\n');
 
-    const recipient = (siteSettings.whatsappNumber || '917777998789').replace(/[^0-9]/g, '');
+    const recipient = (settings.whatsappNumber || '917777998789').replace(/[^0-9]/g, '');
     const whatsappUrl = `https://wa.me/${recipient}?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
     setSubmitted(true);
   };
-
-  const faqs = [
-    {
-      q: 'Can our family schedule an executive tasting session before confirming the booking?',
-      a: 'Yes, absolutely. Once we draft your preliminary banquet menu proposal, we host your family for a private 6-course chef tasting session at our Jubilee Hills Tasting Studio to sample dishes, adjust spices, and review tableware staging.'
-    },
-    {
-      q: 'How far in advance should we reserve our event date?',
-      a: 'For auspicious wedding dates and peak winter seasons (October to March), we recommend booking 4 to 8 months in advance. For corporate galas and private soirees, a minimum of 3 to 6 weeks is advised.'
-    },
-    {
-      q: 'Do you cater destination weddings outside Hyderabad?',
-      a: 'Yes. Our specialized convoy fleet of mobile GPS-monitored refrigerated transport vans travels across Telangana, Andhra Pradesh, Karnataka, and destination resort properties with full staging crew.'
-    },
-    {
-      q: 'How do you ensure strict segregation for Jain and Sattvic preparations?',
-      a: 'We operate dedicated sealed prep zones and separate cookware vessels exclusively for pure vegetarian, root-vegetable-free, and sattvic dishes, certified by our executive head chef.'
-    }
-  ];
 
   return (
     <div className="page-contact" style={{ paddingTop: 'var(--navbar-height)' }}>
@@ -147,7 +145,7 @@ export default function ContactPage({ onOpenEnquiry }) {
                       Headquarters & Tasting Studio
                     </h4>
                     <p style={{ fontSize: '14px', color: 'var(--color-text-secondary)', lineHeight: 1.5, margin: 0 }}>
-                      {siteSettings.address}
+                      {settings.address}
                     </p>
                   </div>
                 </div>
@@ -186,10 +184,10 @@ export default function ContactPage({ onOpenEnquiry }) {
                     </h4>
                     <p style={{ fontSize: '14px', color: 'var(--color-text-secondary)', lineHeight: 1.5, margin: 0 }}>
                       <a
-                        href={`tel:${siteSettings.phone.replace(/\s+/g, '')}`}
+                        href={`tel:${(settings.phone || '').replace(/\s+/g, '')}`}
                         style={{ color: 'var(--color-primary)', fontWeight: 700, textDecoration: 'none' }}
                       >
-                        {siteSettings.phoneDisplay || siteSettings.phone}
+                        {settings.phoneDisplay || settings.phone}
                       </a>{' '}
                       (Direct to Senior Director)
                     </p>
@@ -249,7 +247,7 @@ export default function ContactPage({ onOpenEnquiry }) {
                   </h4>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                     <a
-                      href={siteSettings.social.instagram}
+                      href={settings.social?.instagram}
                       target="_blank"
                       rel="noopener noreferrer"
                       aria-label="Visit KateringKing on Instagram"
@@ -279,11 +277,11 @@ export default function ContactPage({ onOpenEnquiry }) {
                         <Instagram size={17} />
                         <span>Instagram</span>
                       </span>
-                      <span style={{ fontSize: '12.5px', opacity: 0.85 }}>{siteSettings.social.instagramHandle}</span>
+                      <span style={{ fontSize: '12.5px', opacity: 0.85 }}>{settings.social?.instagramHandle}</span>
                     </a>
 
                     <a
-                      href={siteSettings.social.facebook}
+                      href={settings.social?.facebook}
                       target="_blank"
                       rel="noopener noreferrer"
                       aria-label="Visit KateringKing on Facebook"
@@ -324,7 +322,7 @@ export default function ContactPage({ onOpenEnquiry }) {
                         </svg>
                         <span>Facebook</span>
                       </span>
-                      <span style={{ fontSize: '12.5px', opacity: 0.85 }}>{siteSettings.social.facebookHandle}</span>
+                      <span style={{ fontSize: '12.5px', opacity: 0.85 }}>{settings.social?.facebookHandle}</span>
                     </a>
                   </div>
                 </div>
@@ -484,11 +482,11 @@ export default function ContactPage({ onOpenEnquiry }) {
                           outline: 'none'
                         }}
                       >
-                        <option value="50 - 150 guests">50 - 150 guests (Intimate)</option>
-                        <option value="150 - 300 guests">150 - 300 guests (Mid-Scale)</option>
-                        <option value="300 - 600 guests">300 - 600 guests (Large)</option>
-                        <option value="600 - 1500 guests">600 - 1500 guests (Grand)</option>
-                        <option value="1500 - 5000+ guests">1500 - 5000+ guests (Mega Royal)</option>
+                        {(formOptions.guestRanges || []).map((range) => (
+                          <option key={range} value={range}>
+                            {range}
+                          </option>
+                        ))}
                       </select>
                     </div>
                   </div>
@@ -510,11 +508,11 @@ export default function ContactPage({ onOpenEnquiry }) {
                         outline: 'none'
                       }}
                     >
-                      <option value="Royal Wedding & Reception">Royal Wedding & Reception</option>
-                      <option value="Sangeet, Mehendi & Cocktail">Sangeet, Mehendi & Cocktail</option>
-                      <option value="Executive Corporate Summit">Executive Corporate Summit</option>
-                      <option value="VIP Milestone Anniversary">VIP Milestone Anniversary</option>
-                      <option value="Private Estate Soirée">Private Estate Soirée</option>
+                      {(formOptions.eventTypes || []).map((type) => (
+                        <option key={type} value={type}>
+                          {type}
+                        </option>
+                      ))}
                     </select>
                   </div>
 

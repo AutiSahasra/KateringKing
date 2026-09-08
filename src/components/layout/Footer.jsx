@@ -1,10 +1,18 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Crown, Instagram, Twitter, Linkedin, MessageCircle, Mail, Phone, MapPin, Sparkles } from 'lucide-react';
-import { siteSettings } from '../../data/mockData';
+import { siteSettings as initialSiteSettings } from '../../data/mockData';
+import { api } from '../../services/api';
 
 export default function Footer({ onOpenEnquiry }) {
   const currentYear = new Date().getFullYear();
+  const [settings, setSettings] = useState(initialSiteSettings);
+
+  useEffect(() => {
+    api.getSiteSettings().then((data) => {
+      if (data) setSettings(data);
+    });
+  }, []);
 
   return (
     <footer
@@ -62,11 +70,11 @@ export default function Footer({ onOpenEnquiry }) {
               </span>
             </Link>
             <p style={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '14px', lineHeight: 1.7, marginBottom: '24px' }}>
-              {siteSettings.description}
+              {settings.description}
             </p>
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
               <a
-                href={siteSettings.social.instagram}
+                href={settings.social?.instagram}
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Visit KateringKing on Instagram"
@@ -96,7 +104,7 @@ export default function Footer({ onOpenEnquiry }) {
                 <Instagram size={19} />
               </a>
               <a
-                href={siteSettings.social.whatsapp}
+                href={settings.social?.whatsapp || settings.whatsappUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Chat with KateringKing on WhatsApp"
@@ -126,7 +134,7 @@ export default function Footer({ onOpenEnquiry }) {
                 <MessageCircle size={19} />
               </a>
               <a
-                href={siteSettings.social.facebook}
+                href={settings.social?.facebook}
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Visit KateringKing on Facebook"
@@ -217,21 +225,21 @@ export default function Footer({ onOpenEnquiry }) {
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                 <Phone size={16} color="var(--color-primary)" />
                 <a
-                  href={`tel:${siteSettings.phone.replace(/\s+/g, '')}`}
+                  href={`tel:${(settings.phone || '').replace(/\s+/g, '')}`}
                   style={{ color: 'inherit', textDecoration: 'none', transition: 'color var(--transition-fast)' }}
                   onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--color-primary)')}
                   onMouseLeave={(e) => (e.currentTarget.style.color = 'inherit')}
                 >
-                  {siteSettings.phoneDisplay || siteSettings.phone}
+                  {settings.phoneDisplay || settings.phone}
                 </a>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                 <Mail size={16} color="var(--color-primary)" />
-                <span>{siteSettings.email}</span>
+                <span>{settings.email}</span>
               </div>
               <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
                 <MapPin size={16} color="var(--color-primary)" style={{ flexShrink: 0, marginTop: '3px' }} />
-                <span>{siteSettings.address}</span>
+                <span>{settings.address}</span>
               </div>
             </div>
           </div>

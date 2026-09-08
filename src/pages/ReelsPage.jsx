@@ -1,27 +1,20 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import EventReels from '../components/sections/EventReels';
 import SectionHeading from '../components/common/SectionHeading';
 import MagneticButton from '../components/common/MagneticButton';
 import { Sparkles, PhoneCall } from 'lucide-react';
+import { api, reelHighlightsData } from '../services/api';
 
 export default function ReelsPage({ onOpenEnquiry }) {
-  const highlights = [
-    {
-      title: 'The Midnight Tandoor Staging',
-      stats: '1,200 skewers / hour',
-      desc: 'Watch our master ustaads fire raw embers at 480°C to create melt-in-mouth Zafrani kebabs moments before the bride and groom arrive.'
-    },
-    {
-      title: 'Liquid Nitrogen Dessert Cloud',
-      stats: 'Theatrical molecular bar',
-      desc: 'Guests gather as hand-churned pistachio kulfi is dipped into freezing nitrogen vapors, accompanied by edible gold leaf garnish.'
-    },
-    {
-      title: 'Grand Dastarkhwan Unveiling',
-      stats: 'Synchronized butler reveal',
-      desc: 'At precisely 8:30 PM, 60 uniformed stewards lift copper purdah domes simultaneously, releasing aromas of kewra and saffron basmati.'
-    }
-  ];
+  const [highlights, setHighlights] = useState(reelHighlightsData);
+
+  useEffect(() => {
+    api.getReelHighlights().then((data) => {
+      if (data && Array.isArray(data) && data.length > 0) {
+        setHighlights(data);
+      }
+    });
+  }, []);
 
   return (
     <div className="page-reels" style={{ paddingTop: 'var(--navbar-height)' }}>
@@ -47,7 +40,7 @@ export default function ReelsPage({ onOpenEnquiry }) {
           >
             {highlights.map((h, i) => (
               <div
-                key={i}
+                key={h.id || i}
                 style={{
                   backgroundColor: '#FFFFFF',
                   padding: '36px 30px',

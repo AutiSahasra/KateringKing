@@ -1,0 +1,125 @@
+/**
+ * KateringKing CMS Admin Stylesheet
+ * Elegant luxury branding for WordPress admin dashboard.
+ */
+
+:root {
+  --kk-gold: #C88A2E;
+  --kk-gold-light: #E2A64E;
+  --kk-gold-dark: #9E6417;
+  --kk-charcoal: #0F141C;
+  --kk-surface: #1B212D;
+}
+
+/* Sidebar Menu Highlight for KateringKing */
+#adminmenu li.menu-top a[href*="kateringking-settings"],
+#adminmenu li.menu-top a[href*="post_type=catering_package"],
+#adminmenu li.menu-top a[href*="post_type=package_dish"],
+#adminmenu li.menu-top a[href*="post_type=gallery_item"],
+#adminmenu li.menu-top a[href*="post_type=event_reel"] {
+  position: relative;
+}
+
+#adminmenu li.menu-top a[href*="kateringking-settings"] .wp-menu-image::before {
+  color: var(--kk-gold) !important;
+}
+
+#adminmenu li.menu-top.current a[href*="kateringking-settings"],
+#adminmenu li.menu-top.wp-has-current-submenu a[href*="kateringking-settings"] {
+  background: var(--kk-charcoal) !important;
+}
+
+/* ACF Custom Post Type Edit Screens */
+.post-type-catering_package #postbox-container-2,
+.post-type-package_dish #postbox-container-2,
+.post-type-event_reel #postbox-container-2 {
+  max-width: 900px;
+}
+
+.acf-field-group-title {
+  color: var(--kk-gold-dark);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.acf-field .acf-label label {
+  font-weight: 600;
+  color: #2c3338;
+}
+
+/* Badge styling for dietaries and tags in list columns */
+.column-dish_dietary,
+.column-category {
+  font-size: 12px;
+}
+
+.kk-admin-badge {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background-color: #f0f0f1;
+  color: #2c3338;
+}
+
+.kk-admin-badge-gold {
+  background-color: rgba(200, 138, 46, 0.15);
+  color: var(--kk-gold-dark);
+  border: 1px solid rgba(200, 138, 46, 0.3);
+}
+
+.kk-admin-badge-veg {
+  background-color: #E8F5E9;
+  color: #2E7D32;
+  border: 1px solid #A5D6A7;
+}
+
+.kk-admin-badge-nonveg {
+  background-color: #FFEBEE;
+  color: #C62828;
+  border: 1px solid #FFCDD2;
+}
+
+/* KateringKing Admin Notice Banner */
+.kk-admin-banner {
+  background: linear-gradient(135deg, #0F141C 0%, #1E2638 100%);
+  color: #FFFFFF;
+  padding: 16px 20px;
+  border-radius: 6px;
+  border-left: 4px solid var(--kk-gold);
+  margin: 20px 0 15px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.kk-admin-banner h2 {
+  color: var(--kk-gold-light);
+  margin: 0 0 4px 0;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.kk-admin-banner p {
+  color: rgba(255, 255, 255, 0.8);
+  margin: 0;
+  font-size: 13px;
+}
+
+/* Primary buttons with gold accent */
+.button-kk-gold {
+  background: var(--kk-gold) !important;
+  border-color: var(--kk-gold-dark) !important;
+  color: #FFFFFF !important;
+  text-shadow: none !important;
+  font-weight: 600 !important;
+}
+
+.button-kk-gold:hover,
+.button-kk-gold:focus {
+  background: var(--kk-gold-dark) !important;
+  color: #FFFFFF !important;
+}

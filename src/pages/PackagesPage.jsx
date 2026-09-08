@@ -1,30 +1,18 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Packages from '../components/sections/Packages';
 import SectionHeading from '../components/common/SectionHeading';
+import { api, customFeaturesData } from '../services/api';
 
 export default function PackagesPage({ onOpenEnquiry }) {
-  const customFeatures = [
-    {
-      title: 'Dedicated Jain & Sattvic Kitchens',
-      desc: 'Completely segregated preparation lines ensuring zero onion/garlic, root-vegetable compliance, and strictly verified sattvic oils and spices.',
-      tag: 'Strict Segregation'
-    },
-    {
-      title: 'Theatrical Live Counters',
-      desc: 'Flambé pasta wheels, liquid nitrogen dessert cloud stations, live clay tandoor choreography, and artisanal Turkish ice cream carts.',
-      tag: 'Interactive Dining'
-    },
-    {
-      title: 'Royal Nizami & Awadhi Dastarkhwan',
-      desc: 'Slow-cooked Purdah dum biryanis, 24-hour Dal Bukhara, Zafrani sheermal, and shahi desserts crafted by master khansamas.',
-      tag: 'Heritage Recipes'
-    },
-    {
-      title: 'International Continental & Asian Bars',
-      desc: 'Hand-pleated truffle dim sum steamers, authentic wok tossing, Neapolitan wood-fired pizza ovens, and artisanal sushi platters.',
-      tag: 'Global Palate'
-    }
-  ];
+  const [customFeatures, setCustomFeatures] = useState(customFeaturesData);
+
+  useEffect(() => {
+    api.getCustomFeatures().then((data) => {
+      if (data && Array.isArray(data) && data.length > 0) {
+        setCustomFeatures(data);
+      }
+    });
+  }, []);
 
   return (
     <div className="page-packages" style={{ paddingTop: 'var(--navbar-height)' }}>
@@ -50,7 +38,7 @@ export default function PackagesPage({ onOpenEnquiry }) {
           >
             {customFeatures.map((item, idx) => (
               <div
-                key={idx}
+                key={item.id || idx}
                 style={{
                   backgroundColor: '#FFFFFF',
                   padding: 'clamp(24px, 4vw, 32px) 24px',

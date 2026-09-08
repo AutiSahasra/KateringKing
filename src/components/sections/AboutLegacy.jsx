@@ -1,14 +1,39 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import SectionHeading from '../common/SectionHeading';
 import { Crown, Building2, UtensilsCrossed, GraduationCap, Award, Sparkles, CheckCircle2 } from 'lucide-react';
 import { animateFadeUp } from '../../utils/animations';
 import ImageWithLoader from '../common/ImageWithLoader';
+import { api, aboutData as initialAboutData } from '../../services/api';
+
+const renderServiceIcon = (icon) => {
+  if (React.isValidElement(icon)) return icon;
+  switch (icon) {
+    case 'building':
+      return <Building2 size={28} color="var(--color-primary)" />;
+    case 'utensils':
+      return <UtensilsCrossed size={28} color="var(--color-primary)" />;
+    case 'crown':
+    default:
+      return <Crown size={28} color="var(--color-primary)" />;
+  }
+};
+
+const pointIcons = [
+  <GraduationCap key="grad" size={18} strokeWidth={2.4} />,
+  <Award key="award" size={18} strokeWidth={2.4} />,
+  <Sparkles key="spark" size={18} strokeWidth={2.4} />
+];
 
 export default function AboutLegacy() {
   const sectionRef = useRef(null);
   const cardsRef = useRef(null);
+  const [about, setAbout] = useState(initialAboutData);
 
   useEffect(() => {
+    api.getAbout().then((data) => {
+      if (data) setAbout(data);
+    });
+
     animateFadeUp(cardsRef.current?.children, {
       stagger: 0.15,
       yOffset: 30,
@@ -16,35 +41,17 @@ export default function AboutLegacy() {
     });
   }, []);
 
-  const services = [
-    {
-      icon: <Crown size={28} color="var(--color-primary)" />,
-      title: 'Weddings & Social Galas',
-      desc: 'From intimate pre-wedding ceremonies to grand receptions, we design bespoke menus that reflect your vision, served with impeccable grace.',
-      tag: 'Grand Celebrations'
-    },
-    {
-      icon: <Building2 size={28} color="var(--color-primary)" />,
-      title: 'Corporate Events & Exhibitions',
-      desc: 'Elevate your brand with our professional corporate catering. We provide seamless, sophisticated service for board meetings, product launches, and large-scale conventions.',
-      tag: 'Executive & summits'
-    },
-    {
-      icon: <UtensilsCrossed size={28} color="var(--color-primary)" />,
-      title: 'Bespoke Private Dining',
-      desc: 'Exclusive, chef-curated menus brought directly to your chosen venue, offering a restaurant-quality fine dining experience for your most important guests.',
-      tag: 'VIP Fine Dining'
-    }
-  ];
+  const services = about.services || initialAboutData.services;
+  const philosophy = about.philosophy || initialAboutData.philosophy;
 
   return (
     <section id="about" ref={sectionRef} className="section-padding" style={{ backgroundColor: 'var(--color-neutral-canvas)' }}>
       <div className="container">
         {/* Section Main Heading */}
         <SectionHeading
-          kicker="About KateringKing"
-          title="Elevating the Art of Hospitality"
-          subtitle="At KateringKing.com, we believe that exceptional catering goes beyond just great food — it requires precision, formal expertise, and an unwavering commitment to service."
+          kicker={about.kicker || 'About KateringKing'}
+          title={about.title || 'Elevating the Art of Hospitality'}
+          subtitle={about.subtitle || 'At KateringKing.com, we believe that exceptional catering goes beyond just great food — it requires precision, formal expertise, and an unwavering commitment to service.'}
         />
 
         {/* Narrative Split: Visual + Core Philosophy */}
@@ -72,7 +79,7 @@ export default function AboutLegacy() {
               }}
             >
               <ImageWithLoader
-                src="https://images.unsplash.com/photo-1577219491135-ce391730fb2c?auto=format&fit=crop&w=800&q=80"
+                src={philosophy.image || "https://images.unsplash.com/photo-1577219491135-ce391730fb2c?auto=format&fit=crop&w=800&q=80"}
                 alt="Executive master chef presenting fine dining hospitality"
                 spinnerSize={48}
                 theme="dark"
@@ -124,94 +131,42 @@ export default function AboutLegacy() {
                 letterSpacing: '-0.02em'
               }}
             >
-              We don't just cook for your guests; we engineer flawless dining experiences.
+              {philosophy.heading}
             </h3>
 
             <p style={{ color: 'var(--color-text-secondary)', fontSize: '16px', lineHeight: 1.75, marginBottom: '28px', fontWeight: 500 }}>
-              Backed by formal hotel management education and decades of industry experience, we bring a refined, structured approach to every wedding, corporate gala, and private event we undertake.
+              {philosophy.description}
             </p>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '14px' }}>
-                <div
-                  style={{
-                    width: '36px',
-                    height: '36px',
-                    borderRadius: 'var(--radius-sm)',
-                    backgroundColor: 'var(--color-accent-champagne)',
-                    color: 'var(--color-primary)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    flexShrink: 0,
-                    marginTop: '2px'
-                  }}
-                >
-                  <GraduationCap size={18} strokeWidth={2.4} />
+              {(philosophy.points || []).map((pt, idx) => (
+                <div key={idx} style={{ display: 'flex', alignItems: 'flex-start', gap: '14px' }}>
+                  <div
+                    style={{
+                      width: '36px',
+                      height: '36px',
+                      borderRadius: 'var(--radius-sm)',
+                      backgroundColor: 'var(--color-accent-champagne)',
+                      color: 'var(--color-primary)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      flexShrink: 0,
+                      marginTop: '2px'
+                    }}
+                  >
+                    {pointIcons[idx % pointIcons.length]}
+                  </div>
+                  <div>
+                    <h4 style={{ fontSize: '16px', fontWeight: 800, color: 'var(--color-text-primary)', marginBottom: '2px' }}>
+                      {pt.title}
+                    </h4>
+                    <p style={{ fontSize: '14px', color: 'var(--color-text-secondary)', margin: 0, lineHeight: 1.5 }}>
+                      {pt.desc}
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <h4 style={{ fontSize: '16px', fontWeight: 800, color: 'var(--color-text-primary)', marginBottom: '2px' }}>
-                    Formal Hotel Management Expertise
-                  </h4>
-                  <p style={{ fontSize: '14px', color: 'var(--color-text-secondary)', margin: 0, lineHeight: 1.5 }}>
-                    Trained in classical hospitality protocols, precision service standards, and culinary hygiene science.
-                  </p>
-                </div>
-              </div>
-
-              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '14px' }}>
-                <div
-                  style={{
-                    width: '36px',
-                    height: '36px',
-                    borderRadius: 'var(--radius-sm)',
-                    backgroundColor: 'var(--color-accent-champagne)',
-                    color: 'var(--color-primary)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    flexShrink: 0,
-                    marginTop: '2px'
-                  }}
-                >
-                  <Award size={18} strokeWidth={2.4} />
-                </div>
-                <div>
-                  <h4 style={{ fontSize: '16px', fontWeight: 800, color: 'var(--color-text-primary)', marginBottom: '2px' }}>
-                    Decades of Industry Experience
-                  </h4>
-                  <p style={{ fontSize: '14px', color: 'var(--color-text-secondary)', margin: 0, lineHeight: 1.5 }}>
-                    Proven track record across prestigious high-profile banquets, VIP galas, and multi-day celebrations.
-                  </p>
-                </div>
-              </div>
-
-              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '14px' }}>
-                <div
-                  style={{
-                    width: '36px',
-                    height: '36px',
-                    borderRadius: 'var(--radius-sm)',
-                    backgroundColor: 'var(--color-accent-champagne)',
-                    color: 'var(--color-primary)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    flexShrink: 0,
-                    marginTop: '2px'
-                  }}
-                >
-                  <Sparkles size={18} strokeWidth={2.4} />
-                </div>
-                <div>
-                  <h4 style={{ fontSize: '16px', fontWeight: 800, color: 'var(--color-text-primary)', marginBottom: '2px' }}>
-                    Structured & Refined Execution
-                  </h4>
-                  <p style={{ fontSize: '14px', color: 'var(--color-text-secondary)', margin: 0, lineHeight: 1.5 }}>
-                    Meticulous coordination from menu design and kitchen logistics to tableside presentation.
-                  </p>
-                </div>
-              </div>
+              ))}
             </div>
           </div>
         </div>
@@ -295,7 +250,7 @@ export default function AboutLegacy() {
                         justifyContent: 'center'
                       }}
                     >
-                      {service.icon}
+                      {renderServiceIcon(service.icon)}
                     </div>
                     <span
                       style={{

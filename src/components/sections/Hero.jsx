@@ -1,8 +1,9 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowRight, ShieldCheck, Crown, Sparkles } from 'lucide-react';
 import MagneticButton from '../common/MagneticButton';
-import { trustStats } from '../../data/mockData';
+import { trustStats as initialTrustStats } from '../../data/mockData';
+import { api, heroData as initialHeroData } from '../../services/api';
 import { animateFadeUp, animateCounter } from '../../utils/animations';
 import FloatingChefCharacter from '../common/FloatingChefCharacter';
 
@@ -13,7 +14,19 @@ export default function Hero({ onOpenEnquiry }) {
   const rightColRef = useRef(null);
   const statsRef = useRef([]);
 
+  const [hero, setHero] = useState(initialHeroData);
+  const [stats, setStats] = useState(initialTrustStats);
+
   useEffect(() => {
+    // Fetch live CMS data with instant fallback
+    api.getHero().then((data) => {
+      if (data) setHero(data);
+    });
+
+    api.getTrustStats().then((data) => {
+      if (data && data.length > 0) setStats(data);
+    });
+
     animateFadeUp(leftColRef.current?.children, {
       stagger: 0.12,
       duration: 0.85,
@@ -25,13 +38,15 @@ export default function Hero({ onOpenEnquiry }) {
       duration: 1,
       yOffset: 40
     });
+  }, []);
 
-    trustStats.forEach((stat, i) => {
+  useEffect(() => {
+    stats.forEach((stat, i) => {
       if (statsRef.current[i]) {
         animateCounter(statsRef.current[i], stat.value, stat.suffix, 2.2);
       }
     });
-  }, []);
+  }, [stats]);
 
   return (
     <section
@@ -95,7 +110,7 @@ export default function Hero({ onOpenEnquiry }) {
                   marginBottom: '20px'
                 }}
               >
-                Royal Banquets Executed at{' '}
+                {hero.headlineNormal || 'Royal Banquets Executed at'}{' '}
                 <span
                   style={{
                     color: 'var(--color-primary)',
@@ -104,7 +119,7 @@ export default function Hero({ onOpenEnquiry }) {
                     display: 'inline-block'
                   }}
                 >
-                  Industrial Scale.
+                  {hero.headlineAccent || 'Industrial Scale.'}
                 </span>
               </h1>
 
@@ -118,7 +133,7 @@ export default function Hero({ onOpenEnquiry }) {
                   maxWidth: '560px'
                 }}
               >
-                From grand 2,500–guest destination weddings to high-table presidential galas, we orchestrate Michelin-standard culinary production powered by a 12,000 sq.ft commercial kitchen and cold-chain convoys.
+                {hero.subheadline}
               </p>
             </div>
 
@@ -134,10 +149,10 @@ export default function Hero({ onOpenEnquiry }) {
             >
               <MagneticButton
                 className="btn btn-primary"
-                onClick={() => navigate('/packages')}
+                onClick={() => navigate(hero.ctaLink || '/packages')}
                 style={{ padding: '15px 30px', fontSize: '14px' }}
               >
-                <span>Explore Banquet Packages</span>
+                <span>{hero.ctaText || 'Explore Banquet Packages'}</span>
                 <ArrowRight size={17} strokeWidth={2.5} />
               </MagneticButton>
             </div>
@@ -153,7 +168,7 @@ export default function Hero({ onOpenEnquiry }) {
                 borderTop: '2px solid var(--color-border-subtle)'
               }}
             >
-              {trustStats.map((stat, i) => (
+              {stats.map((stat, i) => (
                 <div key={stat.id}>
                   <div
                     ref={(el) => (statsRef.current[i] = el)}

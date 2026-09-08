@@ -1,14 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import SectionHeading from '../common/SectionHeading';
 import { Play, Pause, MapPin, Users, Sparkles, Volume2, VolumeX } from 'lucide-react';
-import { eventReels } from '../../data/mockData';
+import { eventReels as initialEventReels } from '../../data/mockData';
+import { api } from '../../services/api';
 import ImageWithLoader from '../common/ImageWithLoader';
 
 export default function EventReels({ onOpenEnquiry }) {
-  const [activeReelId, setActiveReelId] = useState(eventReels[0]?.id);
+  const [reels, setReels] = useState(initialEventReels);
+  const [activeReelId, setActiveReelId] = useState(initialEventReels[0]?.id);
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(35);
   const [isMuted, setIsMuted] = useState(true);
+
+  useEffect(() => {
+    api.getEventReels().then((data) => {
+      if (data && Array.isArray(data) && data.length > 0) {
+        setReels(data);
+        setActiveReelId((prev) => (data.find((r) => r.id === prev) ? prev : data[0].id));
+      }
+    });
+  }, []);
 
   // Simulated Remotion frame playback effect
   useEffect(() => {
@@ -21,7 +32,7 @@ export default function EventReels({ onOpenEnquiry }) {
     return () => clearInterval(interval);
   }, [isPlaying]);
 
-  const currentReel = eventReels.find((r) => r.id === activeReelId) || eventReels[0];
+  const currentReel = reels.find((r) => r.id === activeReelId) || reels[0] || initialEventReels[0];
 
   return (
     <section id="reels" className="section-padding theme-dark" style={{ position: 'relative', overflow: 'hidden' }}>
@@ -256,7 +267,7 @@ export default function EventReels({ onOpenEnquiry }) {
             </h3>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '18px', marginBottom: '38px' }}>
-              {eventReels.map((reel) => {
+              {reels.map((reel) => {
                 const isSelected = reel.id === activeReelId;
 
                 return (

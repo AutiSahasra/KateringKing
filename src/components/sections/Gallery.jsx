@@ -3,11 +3,12 @@ import SectionHeading from '../common/SectionHeading';
 import BufferingSpinner from '../common/BufferingSpinner';
 import ImageWithLoader from '../common/ImageWithLoader';
 import { X, ChevronLeft, ChevronRight, Eye } from 'lucide-react';
-import { galleryCategories } from '../../data/mockData';
+import { galleryCategories as initialCategories } from '../../data/mockData';
 import api from '../../services/api';
 
 export default function Gallery() {
   const [items, setItems] = useState([]);
+  const [categories, setCategories] = useState(initialCategories);
   const [loading, setLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState('all');
   const [selectedItem, setSelectedItem] = useState(null);
@@ -16,8 +17,15 @@ export default function Gallery() {
     async function loadGallery() {
       try {
         setLoading(true);
-        const data = await api.getGalleryItems();
-        setItems(data);
+        const data = await api.getGallery();
+        if (data && data.items) {
+          setItems(data.items);
+          if (data.categories && data.categories.length > 0) {
+            setCategories(data.categories);
+          }
+        } else if (Array.isArray(data)) {
+          setItems(data);
+        }
       } catch (err) {
         console.error('Failed to load gallery items:', err);
       } finally {
@@ -80,7 +88,7 @@ export default function Gallery() {
             paddingBottom: '4px'
           }}
         >
-          {galleryCategories.map((cat) => {
+          {categories.map((cat) => {
             const isActive = activeCategory === cat.id;
 
             return (

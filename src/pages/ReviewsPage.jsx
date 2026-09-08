@@ -1,8 +1,19 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Testimonials from '../components/sections/Testimonials';
-import { trustStats } from '../data/mockData';
+import { trustStats as initialTrustStats } from '../data/mockData';
+import { api } from '../services/api';
 
 export default function ReviewsPage({ onOpenEnquiry }) {
+  const [stats, setStats] = useState(initialTrustStats);
+
+  useEffect(() => {
+    api.getTrustStats().then((data) => {
+      if (data && Array.isArray(data) && data.length > 0) {
+        setStats(data);
+      }
+    });
+  }, []);
+
   return (
     <div className="page-reviews" style={{ paddingTop: 'var(--navbar-height)' }}>
       {/* Main Testimonials Component */}
@@ -19,7 +30,7 @@ export default function ReviewsPage({ onOpenEnquiry }) {
               textAlign: 'center'
             }}
           >
-            {trustStats.map((stat) => (
+            {stats.map((stat) => (
               <div
                 key={stat.id}
                 style={{

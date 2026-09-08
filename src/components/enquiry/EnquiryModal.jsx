@@ -3,10 +3,22 @@ import { X, MessageCircle, Crown, Calendar, Users, MapPin, Sparkles, Send } from
 import { useForm } from 'react-hook-form';
 import confetti from 'canvas-confetti';
 import { openWhatsApp, generateWhatsAppUrl } from '../../utils/whatsapp';
-import { cateringPackages } from '../../data/mockData';
+import { cateringPackages as initialPackages } from '../../data/mockData';
+import { api, formOptionsData } from '../../services/api';
 
 export default function EnquiryModal({ isOpen, onClose, preselectedPackage }) {
   const [showSuccess, setShowSuccess] = useState(false);
+  const [packages, setPackages] = useState(initialPackages);
+  const [formOptions, setFormOptions] = useState(formOptionsData);
+
+  useEffect(() => {
+    api.getPackages().then((data) => {
+      if (data && Array.isArray(data) && data.length > 0) setPackages(data);
+    });
+    api.getFormOptions().then((data) => {
+      if (data && data.eventTypes && data.guestRanges) setFormOptions(data);
+    });
+  }, []);
 
   const {
     register,
@@ -266,7 +278,7 @@ export default function EnquiryModal({ isOpen, onClose, preselectedPackage }) {
                       outline: 'none'
                     }}
                   >
-                    {cateringPackages.map((p) => (
+                    {packages.map((p) => (
                       <option key={p.id} value={p.name}>
                         {p.name}
                       </option>
@@ -292,12 +304,11 @@ export default function EnquiryModal({ isOpen, onClose, preselectedPackage }) {
                       outline: 'none'
                     }}
                   >
-                    <option value="Grand Royal Wedding">Grand Royal Wedding</option>
-                    <option value="Wedding Reception / Sangeet">Wedding Reception / Sangeet</option>
-                    <option value="Executive Corporate Gala / Summit">Executive Corporate Gala / Summit</option>
-                    <option value="Milestone Birthday / Anniversary">Milestone Birthday / Anniversary</option>
-                    <option value="Private Estate Soirée">Private Estate Soirée</option>
-                    <option value="Other Celebration">Other Celebration</option>
+                    {(formOptions.eventTypes || []).map((type) => (
+                      <option key={type} value={type}>
+                        {type}
+                      </option>
+                    ))}
                   </select>
                 </div>
 
@@ -339,11 +350,11 @@ export default function EnquiryModal({ isOpen, onClose, preselectedPackage }) {
                       outline: 'none'
                     }}
                   >
-                    <option value="50 - 100 Guests">50 - 100 Guests</option>
-                    <option value="100 - 250 Guests">100 - 250 Guests</option>
-                    <option value="250 - 500 Guests">250 - 500 Guests</option>
-                    <option value="500 - 1,000 Guests">500 - 1,000 Guests</option>
-                    <option value="1,000+ Royal Dignitaries">1,000+ Royal Dignitaries</option>
+                    {(formOptions.guestRanges || []).map((range) => (
+                      <option key={range} value={range}>
+                        {range}
+                      </option>
+                    ))}
                   </select>
                 </div>
               </div>

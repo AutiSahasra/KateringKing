@@ -41,3 +41,33 @@
 2026-09-08T14:28:48Z INF precheck component="Cloudflare API" details="API is reachable" run_id=1349cdd8-ce67-44f6-aadb-2c5f361a7762 status=pass target=api.cloudflare.com:443
 2026-09-08T14:28:48Z INF precheck complete hard_fail=false run_id=1349cdd8-ce67-44f6-aadb-2c5f361a7762 suggested_protocol=quic
 2026-09-08T14:28:48Z INF Registered tunnel connection connIndex=0 connection=ab33dab8-28a5-405c-9663-b1a7702431ca event=0 ip=198.41.200.33 location=bom12 protocol=quic
+2026-09-08T14:31:45Z ERR  error="Incoming request ended abruptly: context canceled" connIndex=0 event=1 ingressRule=0 originService=http://localhost:8881
+2026-09-08T14:31:45Z ERR Request failed error="Incoming request ended abruptly: context canceled" connIndex=0 dest=https://toolbox-condition-edit-allowed.trycloudflare.com/wp-json/kateringking/v1/gallery event=0 ip=198.41.200.33 type=http
+2026-09-08T14:31:45Z ERR  error="Incoming request ended abruptly: context canceled" connIndex=0 event=1 ingressRule=0 originService=http://localhost:8881
+2026-09-08T14:31:45Z ERR Request failed error="Incoming request ended abruptly: context canceled" connIndex=0 dest=https://toolbox-condition-edit-allowed.trycloudflare.com/wp-json/kateringking/v1/packages event=0 ip=198.41.200.33 type=http
+2026-09-08T14:31:45Z ERR  error="Incoming request ended abruptly: context canceled" connIndex=0 event=1 ingressRule=0 originService=http://localhost:8881
+2026-09-08T14:31:45Z ERR Request failed error="Incoming request ended abruptly: context canceled" connIndex=0 dest=https://toolbox-condition-edit-allowed.trycloudflare.com/wp-json/kateringking/v1/trust-stats event=0 ip=198.41.200.33 type=http
+2026-09-08T14:31:45Z ERR  error="Incoming request ended abruptly: context canceled" connIndex=0 event=1 ingressRule=0 originService=http://localhost:8881
+2026-09-08T14:31:45Z ERR Request failed error="Incoming request ended abruptly: context canceled" connIndex=0 dest=https://toolbox-condition-edit-allowed.trycloudflare.com/wp-json/kateringking/v1/form-options event=0 ip=198.41.200.33 type=http
+2026-09-08T14:31:45Z ERR  error="Incoming request ended abruptly: context canceled" connIndex=0 event=1 ingressRule=0 originService=http://localhost:8881
+2026-09-08T14:31:45Z ERR  error="Incoming request ended abruptly: context canceled" connIndex=0 event=1 ingressRule=0 originService=http://localhost:8881
+2026-09-08T14:31:45Z ERR  error="Incoming request ended abruptly: context canceled" connIndex=0 event=1 ingressRule=0 originService=http://localhost:8881
+2026-09-08T14:31:45Z ERR Request failed error="Incoming request ended abruptly: context canceled" connIndex=0 dest=https://toolbox-condition-edit-allowed.trycloudflare.com/wp-json/kateringking/v1/menus event=0 ip=198.41.200.33 type=http
+2026-09-08T14:31:45Z ERR Request failed error="Incoming request ended abruptly: context canceled" connIndex=0 dest=https://toolbox-condition-edit-allowed.trycloudflare.com/wp-json/kateringking/v1/site-settings event=0 ip=198.41.200.33 type=http
+2026-09-08T14:31:45Z ERR Request failed error="Incoming request ended abruptly: context canceled" connIndex=0 dest=https://toolbox-condition-edit-allowed.trycloudflare.com/wp-json/kateringking/v1/hero event=0 ip=198.41.200.33 type=http
+2026-09-08T14:31:45Z ERR  error="Incoming request ended abruptly: context canceled" connIndex=0 event=1 ingressRule=0 originService=http://localhost:8881
+2026-09-08T14:31:45Z ERR Request failed error="Incoming request ended abruptly: context canceled" connIndex=0 dest=https://toolbox-condition-edit-allowed.trycloudflare.com/wp-json/kateringking/v1/production-metrics event=0 ip=198.41.200.33 type=http
+2026-09-08T14:31:45Z ERR  error="Incoming request ended abruptly: context canceled" connIndex=0 event=1 ingressRule=0 originService=http://localhost:8881
+2026-09-08T14:31:45Z ERR Request failed error="Incoming request ended abruptly: context canceled" connIndex=0 dest=https://toolbox-condition-edit-allowed.trycloudflare.com/wp-json/kateringking/v1/packages event=0 ip=198.41.200.33 type=http
+2026-09-08T14:31:45Z ERR  error="Incoming request ended abruptly: context canceled" connIndex=0 event=1 ingressRule=0 originService=http://localhost:8881
+2026-09-08T14:31:45Z ERR Request failed error="Incoming request ended abruptly: context canceled" connIndex=0 dest=https://toolbox-condition-edit-allowed.trycloudflare.com/wp-json/kateringking/v1/event-reels event=0 ip=198.41.200.33 type=http
+2026-09-08T14:31:45Z ERR  error="Incoming request ended abruptly: context canceled" connIndex=0 event=1 ingressRule=0 originService=http://localhost:8881
+2026-09-08T14:31:45Z ERR Request failed error="Incoming request ended abruptly: context canceled" connIndex=0 dest=https://toolbox-condition-edit-allowed.trycloudflare.com/wp-json/kateringking/v1/testimonials event=0 ip=198.41.200.33 type=http
+2026-09-08T14:31:45Z ERR  error="Incoming request ended abruptly: context canceled" connIndex=0 event=1 ingressRule=0 originService=http://localhost:8881
+2026-09-08T14:31:45Z ERR Request failed error="Incoming request ended abruptly: context canceled" connIndex=0 dest=https://toolbox-condition-edit-allowed.trycloudflare.com/wp-json/kateringking/v1/gallery event=0 ip=198.41.200.33 type=http
+2026-09-08T14:31:45Z ERR  error="Incoming request ended abruptly: context canceled" connIndex=0 event=1 ingressRule=0 originService=http://localhost:8881
+2026-09-08T14:31:45Z ERR  error="Incoming request ended abruptly: context canceled" connIndex=0 event=1 ingressRule=0 originService=http://localhost:8881
+2026-09-08T14:31:45Z ERR  error="Incoming request ended abruptly: context canceled" connIndex=0 event=1 ingressRule=0 originService=http://localhost:8881
+2026-09-08T14:31:45Z ERR Request failed error="Incoming request ended abruptly: context canceled" connIndex=0 dest=https://toolbox-condition-edit-allowed.trycloudflare.com/wp-json/kateringking/v1/form-options event=0 ip=198.41.200.33 type=http
+2026-09-08T14:31:45Z ERR Request failed error="Incoming request ended abruptly: context canceled" connIndex=0 dest=https://toolbox-condition-edit-allowed.trycloudflare.com/wp-json/kateringking/v1/about event=0 ip=198.41.200.33 type=http
+2026-09-08T14:31:45Z ERR Request failed error="Incoming request ended abruptly: context canceled" connIndex=0 dest=https://toolbox-condition-edit-allowed.trycloudflare.com/wp-json/kateringking/v1/site-settings event=0 ip=198.41.200.33 type=http
